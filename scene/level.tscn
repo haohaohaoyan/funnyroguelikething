@@ -1,0 +1,35 @@
+[gd_scene load_steps=7 format=3 uid="uid://bfo60b6tttysn"]
+
+[ext_resource type="Script" uid="uid://dlkdn1dj71am1" path="res://script/generatefloor.gd" id="1_36wlx"]
+[ext_resource type="Texture2D" uid="uid://bbeoblsa2l5w1" path="res://asset/icon.svg" id="2_dmi07"]
+[ext_resource type="Script" uid="uid://dxrnutqvpgcof" path="res://script/next_floor_stairway.gd" id="4_7g0b6"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_36wlx"]
+texture = ExtResource("2_dmi07")
+texture_region_size = Vector2i(128, 128)
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_ukt71"]
+tile_size = Vector2i(128, 128)
+sources/0 = SubResource("TileSetAtlasSource_36wlx")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dmi07"]
+size = Vector2(128, 128)
+
+[node name="Floor" type="Node2D"]
+script = ExtResource("1_36wlx")
+
+[node name="TileMapLayer" type="TileMapLayer" parent="."]
+tile_set = SubResource("TileSet_ukt71")
+
+[node name="NextFloorStairway" type="Area2D" parent="."]
+scale = Vector2(0.5, 0.5)
+collision_layer = 8
+collision_mask = 8
+script = ExtResource("4_7g0b6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="NextFloorStairway"]
+shape = SubResource("RectangleShape2D_dmi07")
+
+[node name="Sprite2D" type="Sprite2D" parent="NextFloorStairway"]
+texture = ExtResource("2_dmi07")

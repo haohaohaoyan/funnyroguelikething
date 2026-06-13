@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://dfenxrtvskfu3"]
+
+[ext_resource type="Script" uid="uid://bij1i746ki85c" path="res://script/game.gd" id="1_5kiuu"]
+[ext_resource type="PackedScene" uid="uid://blrniim1lxbpn" path="res://scene/player.tscn" id="2_dbls1"]
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_5kiuu")
+
+[node name="Player" parent="." instance=ExtResource("2_dbls1")]
+z_index = 1
+
+[node name="ScreenTransition" type="CanvasLayer" parent="."]
+layer = 128
+
+[node name="ColorRect" type="ColorRect" parent="ScreenTransition"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+metadata/_edit_use_anchors_ = true

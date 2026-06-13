@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://blrniim1lxbpn"]
+
+[ext_resource type="Script" uid="uid://bt3xdymjm66u8" path="res://script/player.gd" id="1_hjaqi"]
+[ext_resource type="Texture2D" uid="uid://bbeoblsa2l5w1" path="res://asset/icon.svg" id="2_fvtld"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ct4mp"]
+size = Vector2(50, 50)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_s4jxa"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_fvtld")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hjaqi"]
+size = Vector2(80, 80)
+
+[node name="Player" type="CharacterBody2D" unique_id=481503623]
+script = ExtResource("1_hjaqi")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2060646201]
+shape = SubResource("RectangleShape2D_ct4mp")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1199007385]
+position = Vector2(-3.8147e-06, -3.8147e-06)
+scale = Vector2(0.390625, 0.390625)
+sprite_frames = SubResource("SpriteFrames_s4jxa")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=689296265]
+position = Vector2(-3.8147e-06, -3.8147e-06)
+scale = Vector2(0.390625, 0.390625)
+process_callback = 0
+position_smoothing_enabled = true
+
+[node name="StairDetect" type="Area2D" parent="." unique_id=337055952]
+collision_layer = 8
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StairDetect" unique_id=1290526261]
+shape = SubResource("RectangleShape2D_hjaqi")
