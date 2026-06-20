@@ -20,6 +20,9 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hjaqi"]
 size = Vector2(80, 80)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fvtld"]
+size = Vector2(141.5, 134)
+
 [node name="Player" type="CharacterBody2D" unique_id=481503623]
 script = ExtResource("1_hjaqi")
 
@@ -37,9 +40,19 @@ scale = Vector2(0.390625, 0.390625)
 process_callback = 0
 position_smoothing_enabled = true
 
-[node name="StairDetect" type="Area2D" parent="." unique_id=337055952]
+[node name="Interact" type="Area2D" parent="." unique_id=337055952]
 collision_layer = 8
 collision_mask = 8
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StairDetect" unique_id=1290526261]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Interact" unique_id=1290526261]
 shape = SubResource("RectangleShape2D_hjaqi")
+
+[node name="AttackCollision" type="Area2D" parent="." unique_id=979362894]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackCollision" unique_id=2077366771]
+position = Vector2(99.25, 0)
+shape = SubResource("RectangleShape2D_fvtld")
+
+[node name="DashCooldown" type="Timer" parent="." unique_id=1240175133]
+
+[node name="AtkCooldown" type="Timer" parent="." unique_id=1260663753]

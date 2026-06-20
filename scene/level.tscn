@@ -1,11 +1,14 @@
-[gd_scene load_steps=7 format=3 uid="uid://bfo60b6tttysn"]
+[gd_scene format=3 uid="uid://bfo60b6tttysn"]
 
 [ext_resource type="Script" uid="uid://dlkdn1dj71am1" path="res://script/generatefloor.gd" id="1_36wlx"]
 [ext_resource type="Texture2D" uid="uid://bbeoblsa2l5w1" path="res://asset/icon.svg" id="2_dmi07"]
 [ext_resource type="Script" uid="uid://dxrnutqvpgcof" path="res://script/next_floor_stairway.gd" id="4_7g0b6"]
 
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_dmi07"]
+load_path = "res://.godot/imported/icon.svg-635c9cd9560944100972280930a50328.ctex"
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_36wlx"]
-texture = ExtResource("2_dmi07")
+texture = SubResource("CompressedTexture2D_dmi07")
 texture_region_size = Vector2i(128, 128)
 0:0/0 = 0
 
@@ -16,20 +19,20 @@ sources/0 = SubResource("TileSetAtlasSource_36wlx")
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dmi07"]
 size = Vector2(128, 128)
 
-[node name="Floor" type="Node2D"]
+[node name="Floor" type="Node2D" unique_id=2143373616]
 script = ExtResource("1_36wlx")
 
-[node name="TileMapLayer" type="TileMapLayer" parent="."]
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=67146562]
 tile_set = SubResource("TileSet_ukt71")
 
-[node name="NextFloorStairway" type="Area2D" parent="."]
+[node name="NextFloorStairway" type="Area2D" parent="." unique_id=1815274710]
 scale = Vector2(0.5, 0.5)
 collision_layer = 8
 collision_mask = 8
 script = ExtResource("4_7g0b6")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="NextFloorStairway"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="NextFloorStairway" unique_id=1225381006]
 shape = SubResource("RectangleShape2D_dmi07")
 
-[node name="Sprite2D" type="Sprite2D" parent="NextFloorStairway"]
+[node name="Sprite2D" type="Sprite2D" parent="NextFloorStairway" unique_id=1181040606]
 texture = ExtResource("2_dmi07")
