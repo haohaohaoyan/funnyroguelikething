@@ -54,5 +54,9 @@ position = Vector2(99.25, 0)
 shape = SubResource("RectangleShape2D_fvtld")
 
 [node name="DashCooldown" type="Timer" parent="." unique_id=1240175133]
+wait_time = 0.7
+one_shot = true
 
 [node name="AtkCooldown" type="Timer" parent="." unique_id=1260663753]
+wait_time = 0.3
+one_shot = true
