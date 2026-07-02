@@ -4,13 +4,15 @@ const SPEED = 200
 const DASH_LENGTH = 5
 const DASH_FRICTION = 40
 
-var mouse_events: Array = []
+var mouse_events: Array = [] # Stores the mouse events to defer to physics process
+# Movement vectors are stored separately and then added before moving for more logical dashing movement
 var dash_velocity: Vector2
 var base_move_velocity: Vector2
 
-# important state thing
+# important state strimg
 var state: String = "idle"
 
+# Main movement loop, obviously
 func _physics_process(_delta: float) -> void:
 	# Basic movement
 	var direction = Input.get_vector("LEFT", "RIGHT", "UP", "DOWN").normalized()
@@ -28,21 +30,25 @@ func _physics_process(_delta: float) -> void:
 			# Movement vector for dashing
 			var move_direction: Vector2 = Vector2(event.position.x - (get_viewport().size.x)/2, event.position.y - (get_viewport().size.y)/2)
 			var move_length: Array # [length_min, length_max]
+			
+			
 			# Cooldown timers are for until next of either action, so after dashing you can only dash or move again after that amount of time
-			if $AtkCooldown.is_stopped() and $DashCooldown.is_stopped():
-				# Attack on left click
-				if event.button_mask == 1:
-					$AtkCooldown.start()
-					move_length = [10, 200]
-					state = "attack"
-				# Dash on right click
-				elif event.button_mask == 2:
-					$DashCooldown.start()
-					move_length = [300,400]
-					state = "dash"
-			else:
+			# Attack on left click with more variable but shorter distance
+			if $AtkCooldown.is_stopped() and $DashCooldown.is_stopped() and event.button_mask == 1:
+				$AtkCooldown.start()
+				move_length = [10, 200]
+				state = "attack"
+				
+			# Dash on right click
+			elif $AtkCooldown.is_stopped() and $DashCooldown.is_stopped() and event.button_mask == 2: # a bit long ik but this makes logic look better
+				$DashCooldown.start()
+				move_length = [300,400]
+				state = "dash"
+			
+			else: # If not valid, immediately tosses event and breaks from if/else. 
 				mouse_events.erase(event)
 				break
+			
 			# Convert vector to the actual movement (with velocity & movement cap)
 			var move_vector: Vector2 = move_direction.normalized() * clamp(move_direction.length(), move_length[0], move_length[1]) * DASH_LENGTH
 			dash_velocity = move_vector
@@ -56,7 +62,7 @@ func _physics_process(_delta: float) -> void:
 	velocity = base_move_velocity + dash_velocity
 	move_and_slide()
 	
-	print(state)
+	# print(state)
 	
 func _input(event):
 	# Catches all mouse events but defers them to physics process
