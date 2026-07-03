@@ -24,6 +24,7 @@ size = Vector2(80, 80)
 size = Vector2(141.5, 134)
 
 [node name="Player" type="CharacterBody2D" unique_id=481503623]
+z_index = 1
 script = ExtResource("1_hjaqi")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2060646201]

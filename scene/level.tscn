@@ -141,11 +141,13 @@ script = ExtResource("1_36wlx")
 
 [node name="LayoutTiles" type="TileMapLayer" parent="." unique_id=67146562]
 visible = false
+z_index = -1
 scale = Vector2(2, 2)
+tile_map_data = PackedByteArray(0, 0, 0, 0, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0)
 tile_set = SubResource("TileSet_ukt71")
 
 [node name="FullFloorTiles" type="TileMapLayer" parent="." unique_id=1678572665]
-scale = Vector2(6, 6)
+scale = Vector2(4, 4)
 tile_set = SubResource("TileSet_ismto")
 
 [node name="NextFloorStairway" type="Area2D" parent="." unique_id=1815274710]
