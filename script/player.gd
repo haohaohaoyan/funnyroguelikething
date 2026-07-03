@@ -39,12 +39,23 @@ func _physics_process(_delta: float) -> void:
 				move_length = [10, 200]
 				state = "attack"
 				
+				# Rotate damage hitbox to face the click direction
+				$AttackCollision.look_at(move_direction + global_position)
+				
 			# Dash on right click
 			elif $AtkCooldown.is_stopped() and $DashCooldown.is_stopped() and event.button_mask == 2: # a bit long ik but this makes logic look better
 				$DashCooldown.start()
 				move_length = [300,400]
 				state = "dash"
-			
+				
+				# Mechanic I think is pretty cool! To detect cool dodges for flurry rushes and the
+				# like, leave behind an invisible hitbox that lasts for a fraction of a second and
+				# triggers the action if it gets hit during that time!
+				
+				$DodgeDetect.global_position = global_position
+				$DodgeDetect.monitoring = true
+				$DodgeWindow.start()
+				
 			else: # If not valid, immediately tosses event and breaks from if/else. 
 				mouse_events.erase(event)
 				break
@@ -62,8 +73,6 @@ func _physics_process(_delta: float) -> void:
 	velocity = base_move_velocity + dash_velocity
 	move_and_slide()
 	
-	# print(state)
-	
 func _input(event):
 	# Catches all mouse events but defers them to physics process
 	if event is InputEventMouseButton:
@@ -73,4 +82,7 @@ func _input(event):
 func _ready():
 	$AtkCooldown.connect("timeout", func () : state = "idle")
 	$DashCooldown.connect("timeout", func () : state = "idle")
+	$DodgeWindow.connect("timeout", func () : 
+		$DodgeDetect.monitoring = false
+		$DodgeDetect.global_position = global_position) # debug for when collisions are visible
 	

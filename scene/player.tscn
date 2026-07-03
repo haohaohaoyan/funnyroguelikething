@@ -23,6 +23,9 @@ size = Vector2(80, 80)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fvtld"]
 size = Vector2(141.5, 134)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_s4jxa"]
+size = Vector2(100, 100)
+
 [node name="Player" type="CharacterBody2D" unique_id=481503623]
 z_index = 1
 script = ExtResource("1_hjaqi")
@@ -48,7 +51,16 @@ collision_mask = 8
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Interact" unique_id=1290526261]
 shape = SubResource("RectangleShape2D_hjaqi")
 
+[node name="DamageCollision" type="Area2D" parent="." unique_id=1492673478]
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DamageCollision" unique_id=760370852]
+shape = SubResource("RectangleShape2D_ct4mp")
+
 [node name="AttackCollision" type="Area2D" parent="." unique_id=979362894]
+collision_layer = 2
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackCollision" unique_id=2077366771]
 position = Vector2(99.25, 0)
@@ -59,5 +71,18 @@ wait_time = 0.7
 one_shot = true
 
 [node name="AtkCooldown" type="Timer" parent="." unique_id=1260663753]
+wait_time = 0.15
+one_shot = true
+
+[node name="DodgeDetect" type="Area2D" parent="." unique_id=939422385]
+top_level = true
+collision_layer = 4
+collision_mask = 4
+monitoring = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DodgeDetect" unique_id=1816494992]
+shape = SubResource("RectangleShape2D_s4jxa")
+
+[node name="DodgeWindow" type="Timer" parent="." unique_id=2085522545]
 wait_time = 0.3
 one_shot = true
