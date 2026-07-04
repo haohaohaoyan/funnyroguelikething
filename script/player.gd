@@ -2,7 +2,7 @@ extends CharacterBody2D
 
 const SPEED = 200
 const DASH_LENGTH = 5
-const DASH_FRICTION = 40
+const DASH_FRICTION = 70
 
 var mouse_events: Array = [] # Stores the mouse events to defer to physics process
 # Movement vectors are stored separately and then added before moving for more logical dashing movement
@@ -34,18 +34,18 @@ func _physics_process(_delta: float) -> void:
 			
 			# Cooldown timers are for until next of either action, so after dashing you can only dash or move again after that amount of time
 			# Attack on left click with more variable but shorter distance
-			if $AtkCooldown.is_stopped() and $DashCooldown.is_stopped() and event.button_mask == 1:
+			if $AtkCooldown.is_stopped() and event.button_mask == 1:
 				$AtkCooldown.start()
-				move_length = [10, 200]
+				move_length = [180, 250]
 				state = "attack"
 				
 				# Rotate damage hitbox to face the click direction
 				$AttackCollision.look_at(move_direction + global_position)
 				
 			# Dash on right click
-			elif $AtkCooldown.is_stopped() and $DashCooldown.is_stopped() and event.button_mask == 2: # a bit long ik but this makes logic look better
+			elif $DashCooldown.is_stopped() and event.button_mask == 2: # a bit long ik but this makes logic look better
 				$DashCooldown.start()
-				move_length = [300,400]
+				move_length = [370,400]
 				state = "dash"
 				
 				# Mechanic I think is pretty cool! To detect cool dodges for flurry rushes and the
@@ -80,7 +80,9 @@ func _input(event):
 			mouse_events.append(event)
 			
 func _ready():
-	$AtkCooldown.connect("timeout", func () : state = "idle")
+	$AtkCooldown.connect("timeout", func () : 
+		state = "idle"
+		$AttackCollision.monitoring = false)
 	$DashCooldown.connect("timeout", func () : state = "idle")
 	$DodgeWindow.connect("timeout", func () : 
 		$DodgeDetect.monitoring = false

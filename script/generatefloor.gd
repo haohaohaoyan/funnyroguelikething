@@ -1,7 +1,6 @@
 # Floor scene includes things limited to this floor. Enemies are also appended to it. 
 # Also includes item generation and things.
 
-
 extends Node2D
 
 @onready var layout_tiles = $LayoutTiles
@@ -14,6 +13,8 @@ var random = RandomNumberGenerator.new()
 var is_active := true
 @export var square_room_size = 4
 @export var floor_type = "uhhh idk replace later" # TODO do this later ig when implementing actual shit
+
+var enemy_script = load("res://script/enemy_master.gd")
 
 # Main setup, handles others
 # Room thing positions are handled by the LayoutTiles. Actual collision and details are handled by FullFloorTiles
@@ -31,6 +32,14 @@ func setup():
 		
 	# Recompile map into for proper collision
 	convert_to_floor(square_room_size)
+	
+	# Convert room locations to global for enemy spawning
+	var global_room_positions := []
+	for room in layout_tiles.get_used_cells():
+		global_room_positions.append(to_global(layout_tiles.map_to_local(room)) * Vector2(layout_tiles.scale.x, layout_tiles.scale.y)) # for some reason it doesnt take in scale
+	
+	# Add enemies by type 
+	spawn_enemies("basic", 8, global_room_positions, 3)
 	
 	var output = {
 		"player_start_pos": player_start
@@ -65,7 +74,7 @@ func grow_map(iterations, chance):
 # Takes the created layout and uses terrains to generate collisions & walls
 func convert_to_floor(room_size):
 	for tile_coord in layout_tiles.get_used_cells(): # Vector2s for its position in the tile layer, from origin
-		var origin_tile_coord = tile_coord * Vector2i(room_size,room_size) # Multiplied by room size to fill full room
+		var origin_tile_coord = tile_coord * Vector2i(room_size , room_size) # Multiplied by room size to fill full room
 		var x_increment = 0
 		while x_increment < room_size:
 			var y_increment = 0
@@ -94,3 +103,37 @@ func convert_to_floor(room_size):
 	
 	# Formats them according to terrain
 	floor_tiles.set_cells_terrain_connect(used_cells, 0, 0)
+
+# Create an enemy master
+func create_enemy_group(type):
+	# Check if the enemy group already exists by accident
+	if get_node_or_null("EnemyGroup-" + type):
+		print("Enemy group already exists, aborting")
+		return null
+		
+	# Make a master node that operates these things
+	var enemy_master = Node2D.new()
+	enemy_master.name = "EnemyGroup-" + type
+	add_child(enemy_master)
+	enemy_master.set_script(enemy_script)
+	enemy_master.type = type
+	
+# Spawn enemies that belong to enemy master. Rooms arg should be the array of rooms,
+# converted to global positions. Spawn area radius defines the circular area around
+# each room center to spawn enemies in
+func spawn_enemies(type: String, count: int, room_centers: Array, spawn_area_radius: int):
+	if not get_node_or_null("EnemyGroup-" + type):
+		create_enemy_group(type)
+	var target_enemy_group = get_node("EnemyGroup-" + type)
+	
+	# shuffle array for randomness
+	# Fuck you shuffle method
+	room_centers.shuffle()
+	for i in range(count):
+		# PLACEHOLDER!!! TODO: Change so that multiple enemies can spawn per room. Currently spawns 1 at center
+		# Instantiate enemy scene and give custody of it to its master
+		var new_enemy = target_enemy_group.enemy_scene_base.instantiate()
+		target_enemy_group.add_child(new_enemy)
+		# Place it on a location from the shuffled room list
+		new_enemy.global_position = room_centers.pop_front()
+		print(new_enemy.global_position)

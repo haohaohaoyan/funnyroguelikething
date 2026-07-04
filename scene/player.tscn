@@ -28,6 +28,7 @@ size = Vector2(100, 100)
 
 [node name="Player" type="CharacterBody2D" unique_id=481503623]
 z_index = 1
+collision_layer = 0
 script = ExtResource("1_hjaqi")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2060646201]
@@ -67,7 +68,6 @@ position = Vector2(99.25, 0)
 shape = SubResource("RectangleShape2D_fvtld")
 
 [node name="DashCooldown" type="Timer" parent="." unique_id=1240175133]
-wait_time = 0.7
 one_shot = true
 
 [node name="AtkCooldown" type="Timer" parent="." unique_id=1260663753]

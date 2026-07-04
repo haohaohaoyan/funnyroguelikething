@@ -7,7 +7,6 @@
 script = ExtResource("1_5kiuu")
 
 [node name="Player" parent="." unique_id=1606013907 instance=ExtResource("2_dbls1")]
-z_index = 1
 
 [node name="ScreenTransition" type="CanvasLayer" parent="." unique_id=819272313]
 layer = 128
