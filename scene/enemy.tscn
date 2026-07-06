@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://c06vfjimnuwhe"]
 
-[ext_resource type="Texture2D" uid="uid://bbeoblsa2l5w1" path="res://asset/icon.svg" id="1_h08p8"]
+[ext_resource type="Texture2D" uid="uid://cbgx78gteuk2q" path="res://asset/smaller_icon.svg" id="1_h08p8"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_f87vc"]
 
@@ -10,16 +10,38 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("1_h08p8")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_h08p8"]
+radius = 31.016125
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5c0fr"]
+size = Vector2(39, 60)
+
 [node name="Enemy" type="CharacterBody2D" unique_id=931085186]
-collision_layer = 0
+collision_layer = 2
+collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=136589946]
 shape = SubResource("CircleShape2D_f87vc")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=788133832]
 sprite_frames = SubResource("SpriteFrames_8u16h")
+
+[node name="SightArea" type="Area2D" parent="." unique_id=98291380]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SightArea" unique_id=798262621]
+shape = SubResource("CircleShape2D_h08p8")
+
+[node name="AttackArea" type="Area2D" parent="." unique_id=71446596]
+collision_layer = 0
+collision_mask = 8
+monitoring = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=884598219]
+position = Vector2(54, 0)
+shape = SubResource("RectangleShape2D_5c0fr")

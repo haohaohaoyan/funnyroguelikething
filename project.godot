@@ -16,8 +16,13 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 config/name="roguelikegamething"
 run/main_scene="uid://dfenxrtvskfu3"
-config/features=PackedStringArray("4.6", "GL Compatibility")
+config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://asset/icon.svg"
+
+[autoload]
+
+Global="*uid://cxncj28k78kkh"
+EnemyPatterns="*uid://ba3qiogoaf02n"
 
 [editor_plugins]
 

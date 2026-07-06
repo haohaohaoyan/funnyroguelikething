@@ -10,7 +10,6 @@ script = ExtResource("1_5kiuu")
 
 [node name="ScreenTransition" type="CanvasLayer" parent="." unique_id=819272313]
 layer = 128
-visible = false
 
 [node name="ColorRect" type="ColorRect" parent="ScreenTransition" unique_id=467925286]
 anchors_preset = 15
@@ -21,9 +20,9 @@ grow_vertical = 2
 color = Color(0, 0, 0, 1)
 metadata/_edit_use_anchors_ = true
 
-[node name="HUDLayer" type="CanvasLayer" parent="." unique_id=334191996]
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=334191996]
 
-[node name="HUD" type="Control" parent="HUDLayer" unique_id=216796058]
+[node name="HUD" type="Control" parent="CanvasLayer" unique_id=216796058]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -31,34 +30,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="XPBar" type="ProgressBar" parent="HUDLayer/HUD" unique_id=1459961381]
+[node name="ProgressBar" type="ProgressBar" parent="CanvasLayer/HUD" unique_id=1459961381]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 27.0
 grow_horizontal = 2
-
-[node name="HPBar" type="ProgressBar" parent="HUDLayer/HUD" unique_id=1641717315]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_top = -27.0
-offset_right = 311.0
-grow_vertical = 0
-show_percentage = false
-
-[node name="Label" type="Label" parent="HUDLayer/HUD/HPBar" unique_id=176617586]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -11.5
-offset_right = 20.0
-offset_bottom = 11.5
-grow_horizontal = 2
-grow_vertical = 2
-text = "HP: "

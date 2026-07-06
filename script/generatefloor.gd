@@ -39,13 +39,11 @@ func setup():
 		global_room_positions.append(to_global(layout_tiles.map_to_local(room)) * Vector2(layout_tiles.scale.x, layout_tiles.scale.y)) # for some reason it doesnt take in scale
 	
 	# Add enemies by type 
-	spawn_enemies("basic", 8, global_room_positions, 3)
+	spawn_enemies("basic", 12, global_room_positions, 150, 3)
 	
 	var output = {
 		"player_start_pos": player_start
 	}
-	
-	# print(layout_tiles.get_used_cells()) debug
 	
 	return output
 
@@ -114,14 +112,16 @@ func create_enemy_group(type):
 	# Make a master node that operates these things
 	var enemy_master = Node2D.new()
 	enemy_master.name = "EnemyGroup-" + type
-	add_child(enemy_master)
 	enemy_master.set_script(enemy_script)
+	add_child(enemy_master)
 	enemy_master.type = type
+	
+	return enemy_master
 	
 # Spawn enemies that belong to enemy master. Rooms arg should be the array of rooms,
 # converted to global positions. Spawn area radius defines the circular area around
-# each room center to spawn enemies in
-func spawn_enemies(type: String, count: int, room_centers: Array, spawn_area_radius: int):
+# each room center to spawn enemies in. Max density is how many enemies max to a room.
+func spawn_enemies(type: String, count: int, room_centers: Array, spawn_area_radius: int, max_density: int):
 	if not get_node_or_null("EnemyGroup-" + type):
 		create_enemy_group(type)
 	var target_enemy_group = get_node("EnemyGroup-" + type)
@@ -129,11 +129,23 @@ func spawn_enemies(type: String, count: int, room_centers: Array, spawn_area_rad
 	# shuffle array for randomness
 	# Fuck you shuffle method
 	room_centers.shuffle()
-	for i in range(count):
+	var enemies_spawned : int = 0
+	while enemies_spawned <= count:
 		# PLACEHOLDER!!! TODO: Change so that multiple enemies can spawn per room. Currently spawns 1 at center
-		# Instantiate enemy scene and give custody of it to its master
-		var new_enemy = target_enemy_group.enemy_scene_base.instantiate()
-		target_enemy_group.add_child(new_enemy)
-		# Place it on a location from the shuffled room list
-		new_enemy.global_position = room_centers.pop_front()
-		print(new_enemy.global_position)
+		# Break in case list is already exhausted
+		if len(room_centers) > 0:
+			# Choose random room center, amount of enemies to put in room
+			var selected_room_center = room_centers.pop_front()
+			var enemy_count = random.randi_range(1, max_density)
+			# Summon based on enemy density
+			for enemy_to_spawn in range(enemy_count):
+				# Offset from room center by a random vector within the circle defined by room center
+				# and spawn_area_radius.
+				var location = selected_room_center + Vector2(random.randi_range(1, spawn_area_radius), 0).rotated(randf_range(1, 2*PI))
+				target_enemy_group.spawn_typed_enemy(location)
+				enemies_spawned += 1
+		else:
+			break
+		
+		
+		

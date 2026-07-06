@@ -73,6 +73,11 @@ func _physics_process(_delta: float) -> void:
 	velocity = base_move_velocity + dash_velocity
 	move_and_slide()
 	
+	# Update globals related to player
+	
+	Global.player_position = global_position
+	Global.player_state = state
+	
 func _input(event):
 	# Catches all mouse events but defers them to physics process
 	if event is InputEventMouseButton:
