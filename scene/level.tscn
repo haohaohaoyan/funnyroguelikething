@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dlkdn1dj71am1" path="res://script/generatefloor.gd" id="1_36wlx"]
 [ext_resource type="Texture2D" uid="uid://c2h6ahwgaqmo5" path="res://asset/roomparts.png" id="2_7g0b6"]
-[ext_resource type="Texture2D" uid="uid://bbeoblsa2l5w1" path="res://asset/icon.svg" id="2_dmi07"]
+[ext_resource type="Texture2D" uid="uid://cdwkt85v42gf8" path="res://asset/icon.svg" id="2_dmi07"]
 [ext_resource type="Script" uid="uid://dxrnutqvpgcof" path="res://script/next_floor_stairway.gd" id="4_7g0b6"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_dmi07"]

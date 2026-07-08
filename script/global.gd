@@ -23,5 +23,6 @@ var player_health : int = 50 :
 		player_health = new_health
 		player_health_changed.emit(new_health)
 		
+var player_attack_power : int = 18
 
 var floor_active : bool = false

@@ -9,13 +9,11 @@ extends Node2D
 
 var enemy_scene_base = preload("res://scene/enemy.tscn")
 
-# Big information dict! HP numbers should be high because who doesn't like meaty big damage numbers?
-# Basic enemy is used as placeholder
+# Dictionary of enemy stat constants like speed and stuff
 var enemy_info : Dictionary
 
-var controlled_enemies := [] # Dictionaries of the enemy's data, like health and state. 
-
-
+# Data for enemies is stored as their metadata, which isn't convenient but they're 
+# attached only to the enemy now, not their master.
 
 # Spawn an enemy, obviously. Position can be inputted from other nodes
 func spawn_typed_enemy(spawn_position):
@@ -27,40 +25,47 @@ func spawn_typed_enemy(spawn_position):
 	# Set the notice radius according to this enemy group's type
 	new_enemy.get_node("SightArea/CollisionShape2D").shape.radius = enemy_info["notice_distance"]
 	
-	controlled_enemies.append(
-		{
-			"node": new_enemy,
-			"hp": enemy_info["hp"],
-			"state": "idle",
-			"attack-state": "idle"
-		}
+	# Set metadata about hp, state, attack state, etc
+	new_enemy.set_meta("hp", enemy_info["hp"])
+	new_enemy.set_meta("state", "idle")
+	new_enemy.set_meta("attack_state", "idle")
+	
+	new_enemy.get_node("AttackArea").connect("area_entered", func (_blank) :
+		EnemyPatterns.call("on_attack_connect_" + enemy_info["attack_type"], enemy_info, new_enemy)
+		)
+		
+	
+	new_enemy.get_node("DamageArea").connect("body_entered", func(_blank) :
+		EnemyPatterns.on_damage_take(new_enemy)
+		)
+	new_enemy.get_node("DamageArea").connect("area_entered", func(_blank) :
+		EnemyPatterns.on_damage_take(new_enemy)
 		)
 	
 func _physics_process(_delta: float) -> void:
-	for enemy in controlled_enemies:
+	for enemy in get_children():
 		# Per-enemy script
-		var enemy_node = enemy["node"]
-		match enemy["state"]:
+		match enemy.get_meta("state"):
 			"idle":
 				# Use an Area2D to detect player/enemies that have spotted player
 				# Detects bodies only, not other enemy areas or walls
-				if len(enemy_node.get_node("SightArea").get_overlapping_bodies()) > 0:
-					if enemy_node.get_node("SightArea").get_overlapping_bodies().any(
+				if len(enemy.get_node("SightArea").get_overlapping_bodies()) > 0:
+					if enemy.get_node("SightArea").get_overlapping_bodies().any(
 						func (node) : return node is CharacterBody2D # Check if node is player
 					):
 						# Emit notice signal TODO
-						enemy["state"] = "chase"
+						enemy.set_meta("state", "chase")
 			"chase":
-				enemy_node.look_at(Global.player_position)
+				enemy.look_at(Global.player_position)
 				
 				# If not close enough to player to attack, start getting close to attack, duh!
-				enemy_node.velocity = (Global.player_position - enemy_node.global_position).normalized() * enemy_info["speed"]
-				enemy_node.move_and_slide()
+				enemy.velocity = (Global.player_position - enemy.global_position).normalized() * enemy_info["speed"]
+				enemy.move_and_slide()
 				
 				# Start attacking if close enough
-				if (enemy_node.global_position - Global.player_position).length() <= enemy_info["attack_distance"]:
+				if (enemy.global_position - Global.player_position).length() <= enemy_info["attack_distance"]:
 					# Change state to attack
-					enemy["state"] = "attack"
+					enemy.set_meta("state", "attack")
 			"attack":
 					# Pass control over to the enemy attack handler
 					EnemyPatterns.call("attack_" + type, enemy)
