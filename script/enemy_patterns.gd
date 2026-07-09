@@ -41,11 +41,26 @@ func on_attack_connect_default(enemy_type, enemy):
 func on_damage_take(enemy):
 	# Subtract from health
 	# TODO: add knockback
-	enemy.set_meta("hp", enemy.get_meta("hp") - Global.player_attack_power)
-	# Placeholder death
-	if enemy.get_meta("hp") <= 0:
-		# Insert death animation
-		enemy.queue_free()
+	# If has not already been hit by this attack
+	if enemy not in Global.player_current_attack_hit_enemies:
+		# Attack damage formula: player attack base +- 15 percent, multiply by crit if critting
+		var crit_boost = 1 if random.randf() <= Global.player_stats["critical_chance"] else 3
+		var damage_taken = (Global.player_stats["attack_power"] + 
+			round((random.randf() - 0.5) * (Global.player_stats["attack_power"] * 0.15))
+			* crit_boost
+			)
+		
+		enemy.set_meta("hp", enemy.get_meta("hp") - damage_taken)
+		# Placeholder death
+		if enemy.get_meta("hp") <= 0:
+			# Insert death animation
+			enemy.queue_free()
+			
+		# Emit damage number
+		Global.emit_floating_text(enemy, str(int(damage_taken)), Vector2.UP, Color.WHITE)
+		
+		# Add to attack list so it isn't attacked again in the same hit
+		Global.player_current_attack_hit_enemies.append(enemy)
 
 
 # Basic enemy (demo)
@@ -69,12 +84,16 @@ func attack_basic(enemy : Node):
 		# Hits once with a slightly randomized attack value and deactivates to only hit once
 		
 		# Sets timers to stop attacking and to attack again
-		# Timers check for enemy first in case it dies while they're running
-		get_tree().create_timer(0.2).connect("timeout", func () : 
-			if enemy:
-				enemy.get_node("AttackArea").monitoring = false)
-		get_tree().create_timer(1.2).connect("timeout", func () :
-			if enemy:
-				enemy.set_meta("attack_state", "idle"))
+		# Tween timers check for enemy first in case it dies while they're running
+		var attack_finish_tween = enemy.create_tween()
+		attack_finish_tween.tween_interval(0.2)
+		attack_finish_tween.tween_callback(func () : 
+			enemy.get_node("AttackArea").monitoring = false)
+			
+		var attack_cooldown_tween = enemy.create_tween()
+		attack_cooldown_tween.tween_interval(1.2)
+		attack_cooldown_tween.tween_callback(func () : 
+			enemy.set_meta("attack_state", "idle"))
+			
 	if (enemy.global_position - Global.player_position).length() >= enemy_info_basic["attack_distance"]:
 		enemy.set_meta("state", "chase")

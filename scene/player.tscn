@@ -28,6 +28,7 @@ size = Vector2(100, 100)
 
 [node name="Player" type="CharacterBody2D" unique_id=481503623]
 z_index = 1
+collision_mask = 3
 script = ExtResource("1_hjaqi")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2060646201]
@@ -61,6 +62,7 @@ shape = SubResource("RectangleShape2D_ct4mp")
 [node name="AttackCollision" type="Area2D" parent="." unique_id=979362894]
 collision_layer = 4
 collision_mask = 4
+monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackCollision" unique_id=2077366771]
 position = Vector2(85, 0)

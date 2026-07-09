@@ -23,6 +23,36 @@ var player_health : int = 50 :
 		player_health = new_health
 		player_health_changed.emit(new_health)
 		
-var player_attack_power : int = 18
 
+# List of nodes already hit by the current attack to avoid dealing 5000 hits in a second
+var player_current_attack_hit_enemies := []
+
+# Extra player stats that can be changed by upgrades and weapons
+var player_stats := {
+	"attack_power": 18, # Base damage points per attack
+	"critical_chance": 0.1, # Chance out of 1 that an attack is critical
+	"critical_bonus": 3, # Number to multiply by on critical
+}
+
+# Boolean for if the floor gameplay is active or not
+# Mostly to prevent loads of enemies immediately ganging up on you
 var floor_active : bool = false
+
+# Function for creating floating text like for upgrades, healing, damage
+# Make sure to include parent for where it's springing off of
+func emit_floating_text(parent: Node2D, value : String, direction : Vector2, color: Color):
+	# Currently summons & discards a label for whenever it happens
+	var new_label = Label.new()
+	new_label.text = value
+	new_label.top_level = true
+	parent.add_child(new_label)
+	new_label.global_position = parent.global_position
+	
+	var floating_text_tween = new_label.create_tween()
+	# Add property to make it move in the direction of the Vector2 and fade out
+	floating_text_tween.tween_property(new_label, "global_position", 
+		new_label.global_position + (direction.normalized() * 50), 1)
+	floating_text_tween.parallel().tween_property(new_label, "modulate:a", 
+		0, 1)
+	floating_text_tween.tween_callback(func () : new_label.queue_free())
+	

@@ -41,12 +41,21 @@ func _physics_process(_delta: float) -> void:
 				
 				# Rotate damage hitbox to face the click direction
 				$AttackCollision.look_at(move_direction + global_position)
+				# Activate attack
+				$AttackCollision.monitorable = true
+				$AttackCollision/CollisionShape2D.disabled = false
+				$AttackCollision.visible = true
+				# Empty list of hit enemies 
+				Global.player_current_attack_hit_enemies = []
 				
 			# Dash on right click
 			elif $DashCooldown.is_stopped() and event.button_mask == 2: # a bit long ik but this makes logic look better
 				$DashCooldown.start()
 				move_length = [370,400]
 				state = "dash"
+				
+				# Disable collision with enemies to dash through them
+				set_collision_mask_value(2, false)
 				
 				# Mechanic I think is pretty cool! To detect cool dodges for flurry rushes and the
 				# like, leave behind an invisible hitbox that lasts for a fraction of a second and
@@ -87,9 +96,13 @@ func _input(event):
 func _ready():
 	$AtkCooldown.connect("timeout", func () : 
 		state = "idle"
-		$AttackCollision.monitoring = false)
+		$AttackCollision.monitorable = false
+		$AttackCollision/CollisionShape2D.disabled = true
+		$AttackCollision.visible = false) # debug
 	$DashCooldown.connect("timeout", func () : state = "idle")
 	$DodgeWindow.connect("timeout", func () : 
 		$DodgeDetect.monitoring = false
+		set_collision_mask_value(2, true)
 		$DodgeDetect.global_position = global_position) # debug for when collisions are visible
+		
 	

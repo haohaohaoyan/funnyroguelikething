@@ -35,14 +35,8 @@ func spawn_typed_enemy(spawn_position):
 		)
 		
 	
-	new_enemy.get_node("DamageArea").connect("body_entered", func(_blank) :
-		EnemyPatterns.on_damage_take(new_enemy)
-		)
-	new_enemy.get_node("DamageArea").connect("area_entered", func(_blank) :
-		EnemyPatterns.on_damage_take(new_enemy)
-		)
-	
 func _physics_process(_delta: float) -> void:
+	# Handles movement & actions
 	for enemy in get_children():
 		# Per-enemy script
 		match enemy.get_meta("state"):
@@ -69,3 +63,7 @@ func _physics_process(_delta: float) -> void:
 			"attack":
 					# Pass control over to the enemy attack handler
 					EnemyPatterns.call("attack_" + type, enemy)
+					
+		# Handles damage and health
+		if enemy.get_node("DamageArea").has_overlapping_bodies() or enemy.get_node("DamageArea").has_overlapping_areas():
+			EnemyPatterns.on_damage_take(enemy)
