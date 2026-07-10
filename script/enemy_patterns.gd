@@ -23,8 +23,6 @@ extends Node
 
 # Damage is handled by enemy to specify things.
 
-var random = RandomNumberGenerator.new()
-
 # Abstract enemy attack event
 # Enemy type is the type-based base stats, enemy_node is the node, enemy_info is the info dict
 # Only for one-hits! Combo and chained attacks should have a dedicated attack
@@ -32,7 +30,7 @@ func on_attack_connect_default(enemy_type, enemy):
 	# Don't attack invincible dashing players
 	if not Global.player_state == "dash":
 		# Hit once, attack power plus or minus 15%
-		var damage_mod = round((random.randf() - 0.5) * (enemy_type["attack_power"] * 0.15))
+		var damage_mod = round((randf() - 0.5) * (enemy_type["attack_power"] * 0.15))
 		Global.player_health -= (enemy_type["attack_power"] + damage_mod)
 	# Still hits and stops to trigger any flurry rush things
 	enemy.get_node("AttackArea").set_deferred("monitoring", false)
@@ -42,25 +40,26 @@ func on_damage_take(enemy):
 	# Subtract from health
 	# TODO: add knockback
 	# If has not already been hit by this attack
-	if enemy not in Global.player_current_attack_hit_enemies:
+	if enemy not in Global.player_current_attack["enemies_hit"]:
 		# Attack damage formula: player attack base +- 15 percent, multiply by crit if critting
-		var crit_boost = 1 if random.randf() <= Global.player_stats["critical_chance"] else 3
+		var crit_boost = 1 # 1 if random.randf() >= Global.player_stats["critical_chance"] else 3
 		var damage_taken = (Global.player_stats["attack_power"] + 
-			round((random.randf() - 0.5) * (Global.player_stats["attack_power"] * 0.15))
-			* crit_boost
-			)
+			round((randf() - 0.5) * (Global.player_stats["attack_power"] * 0.15))
+			) * crit_boost
+		
+		# Emit damage number
+		await Global.emit_floating_text(enemy, str(int(damage_taken)), 
+		Global.player_current_attack["direction"], 0.7)
 		
 		enemy.set_meta("hp", enemy.get_meta("hp") - damage_taken)
 		# Placeholder death
 		if enemy.get_meta("hp") <= 0:
 			# Insert death animation
 			enemy.queue_free()
-			
-		# Emit damage number
-		Global.emit_floating_text(enemy, str(int(damage_taken)), Vector2.UP, Color.WHITE)
+			# Global.xp_count
 		
 		# Add to attack list so it isn't attacked again in the same hit
-		Global.player_current_attack_hit_enemies.append(enemy)
+		Global.player_current_attack["enemies_hit"].append(enemy)
 
 
 # Basic enemy (demo)

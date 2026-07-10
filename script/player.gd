@@ -39,14 +39,16 @@ func _physics_process(_delta: float) -> void:
 				move_length = [180, 250]
 				state = "attack"
 				
-				# Rotate damage hitbox to face the click direction
+				# Rotate damage hitbox to face the click direction, update direction to match
 				$AttackCollision.look_at(move_direction + global_position)
+				Global.player_current_attack["direction"] = (move_direction + global_position).normalized()
 				# Activate attack
 				$AttackCollision.monitorable = true
 				$AttackCollision/CollisionShape2D.disabled = false
 				$AttackCollision.visible = true
 				# Empty list of hit enemies 
-				Global.player_current_attack_hit_enemies = []
+				Global.player_current_attack["enemies_hit"] = []
+				
 				
 			# Dash on right click
 			elif $DashCooldown.is_stopped() and event.button_mask == 2: # a bit long ik but this makes logic look better

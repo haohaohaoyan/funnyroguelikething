@@ -21,7 +21,7 @@ animations = [{
 size = Vector2(80, 80)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fvtld"]
-size = Vector2(170, 134)
+size = Vector2(147, 134)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_s4jxa"]
 size = Vector2(100, 100)
@@ -65,7 +65,7 @@ collision_mask = 4
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackCollision" unique_id=2077366771]
-position = Vector2(85, 0)
+position = Vector2(96.5, 0)
 shape = SubResource("RectangleShape2D_fvtld")
 
 [node name="DashCooldown" type="Timer" parent="." unique_id=1240175133]

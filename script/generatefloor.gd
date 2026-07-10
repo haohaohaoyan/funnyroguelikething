@@ -6,8 +6,6 @@ extends Node2D
 @onready var layout_tiles = $LayoutTiles
 @onready var floor_tiles = $FullFloorTiles
 
-var random = RandomNumberGenerator.new()
-
 @warning_ignore("unused_signal") signal next_floor # fire when stairway activated
 
 var is_active := true
@@ -58,7 +56,7 @@ func grow_map(iterations, chance):
 		for tile in cells:
 			for direction in [TileSet.CELL_NEIGHBOR_RIGHT_SIDE, TileSet.CELL_NEIGHBOR_LEFT_SIDE,TileSet.CELL_NEIGHBOR_BOTTOM_SIDE, TileSet.CELL_NEIGHBOR_TOP_SIDE]:
 				if layout_tiles.get_cell_source_id(layout_tiles.get_neighbor_cell(tile, direction)) == -1:
-					if random.randf() <= chance:
+					if randf() <= chance:
 						layout_tiles.set_cell(layout_tiles.get_neighbor_cell(tile, direction), 0, Vector2i(0,0))
 						change_list.append(layout_tiles.get_neighbor_cell(tile, direction))
 	
@@ -136,12 +134,12 @@ func spawn_enemies(type: String, count: int, room_centers: Array, spawn_area_rad
 		if len(room_centers) > 0:
 			# Choose random room center, amount of enemies to put in room
 			var selected_room_center = room_centers.pop_front()
-			var enemy_count = random.randi_range(1, max_density)
+			var enemy_count = randi_range(1, max_density)
 			# Summon based on enemy density
 			for enemy_to_spawn in range(enemy_count):
 				# Offset from room center by a random vector within the circle defined by room center
 				# and spawn_area_radius.
-				var location = selected_room_center + Vector2(random.randi_range(1, spawn_area_radius), 0).rotated(randf_range(1, 2*PI))
+				var location = selected_room_center + Vector2(randi_range(1, spawn_area_radius), 0).rotated(randf_range(1, 2*PI))
 				target_enemy_group.spawn_typed_enemy(location)
 				enemies_spawned += 1
 		else:

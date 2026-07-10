@@ -21,8 +21,8 @@ config/icon="res://asset/icon.svg"
 
 [autoload]
 
-Global="*uid://cxncj28k78kkh"
 EnemyPatterns="*uid://ba3qiogoaf02n"
+Global="*uid://cfskhcrdgbwxh"
 
 [editor_plugins]
 

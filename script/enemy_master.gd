@@ -48,6 +48,7 @@ func _physics_process(_delta: float) -> void:
 						func (node) : return node is CharacterBody2D # Check if node is player
 					):
 						# Emit notice signal TODO
+						Global.emit_floating_text(enemy, "!", Vector2.UP, 0, Color.RED)
 						enemy.set_meta("state", "chase")
 			"chase":
 				enemy.look_at(Global.player_position)
