@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+@onready var Game = get_node("/root/Game")
+
 const SPEED = 200
 const DASH_LENGTH = 5
 const DASH_FRICTION = 70
@@ -41,13 +43,13 @@ func _physics_process(_delta: float) -> void:
 				
 				# Rotate damage hitbox to face the click direction, update direction to match
 				$AttackCollision.look_at(move_direction + global_position)
-				Global.player_current_attack["direction"] = (move_direction + global_position).normalized()
+				Game.player_current_attack["direction"] = (move_direction + global_position).normalized()
 				# Activate attack
 				$AttackCollision.monitorable = true
 				$AttackCollision/CollisionShape2D.disabled = false
 				$AttackCollision.visible = true
 				# Empty list of hit enemies 
-				Global.player_current_attack["enemies_hit"] = []
+				Game.player_current_attack["enemies_hit"] = []
 				
 				
 			# Dash on right click
@@ -86,8 +88,8 @@ func _physics_process(_delta: float) -> void:
 	
 	# Update globals related to player
 	
-	Global.player_position = global_position
-	Global.player_state = state
+	Game.player_position = global_position
+	Game.player_state = state
 	
 func _input(event):
 	# Catches all mouse events but defers them to physics process

@@ -1,5 +1,6 @@
 extends Node
 
+@onready var Game = get_node("/root/Game")
 # Big singleton for holding enemy behaviors so a giant match statement isn't necessary, instead directly pointing.
 # Expect all functions to include a "enemy" arg for the enemy node
 # Abstract, multi-use behaviors require the enemy type dict, enemy-specific ones won't
@@ -28,10 +29,10 @@ extends Node
 # Only for one-hits! Combo and chained attacks should have a dedicated attack
 func on_attack_connect_default(enemy_type, enemy):
 	# Don't attack invincible dashing players
-	if not Global.player_state == "dash":
+	if not Game.player_state == "dash":
 		# Hit once, attack power plus or minus 15%
 		var damage_mod = round((randf() - 0.5) * (enemy_type["attack_power"] * 0.15))
-		Global.player_health -= (enemy_type["attack_power"] + damage_mod)
+		Game.player_health -= (enemy_type["attack_power"] + damage_mod)
 	# Still hits and stops to trigger any flurry rush things
 	enemy.get_node("AttackArea").set_deferred("monitoring", false)
 	
@@ -40,26 +41,26 @@ func on_damage_take(enemy):
 	# Subtract from health
 	# TODO: add knockback
 	# If has not already been hit by this attack
-	if enemy not in Global.player_current_attack["enemies_hit"]:
+	if enemy not in Game.player_current_attack["enemies_hit"]:
 		# Attack damage formula: player attack base +- 15 percent, multiply by crit if critting
-		var crit_boost = 1 # 1 if random.randf() >= Global.player_stats["critical_chance"] else 3
-		var damage_taken = (Global.player_stats["attack_power"] + 
-			round((randf() - 0.5) * (Global.player_stats["attack_power"] * 0.15))
+		var crit_boost = 1 # 1 if random.randf() >= Game.player_stats["critical_chance"] else 3
+		var damage_taken = (Game.player_stats["attack_power"] + 
+			round((randf() - 0.5) * (Game.player_stats["attack_power"] * 0.15))
 			) * crit_boost
 		
 		# Emit damage number
-		await Global.emit_floating_text(enemy, str(int(damage_taken)), 
-		Global.player_current_attack["direction"], 0.7)
+		await Game.emit_floating_text(enemy, str(int(damage_taken)), 
+		Game.player_current_attack["direction"], 0.7)
 		
 		enemy.set_meta("hp", enemy.get_meta("hp") - damage_taken)
 		# Placeholder death
 		if enemy.get_meta("hp") <= 0:
 			# Insert death animation
 			enemy.queue_free()
-			# Global.xp_count
+			# Game.xp_count
 		
 		# Add to attack list so it isn't attacked again in the same hit
-		Global.player_current_attack["enemies_hit"].append(enemy)
+		Game.player_current_attack["enemies_hit"].append(enemy)
 
 
 # Basic enemy (demo)
@@ -94,5 +95,5 @@ func attack_basic(enemy : Node):
 		attack_cooldown_tween.tween_callback(func () : 
 			enemy.set_meta("attack_state", "idle"))
 			
-	if (enemy.global_position - Global.player_position).length() >= enemy_info_basic["attack_distance"]:
+	if (enemy.global_position - Game.player_position).length() >= enemy_info_basic["attack_distance"]:
 		enemy.set_meta("state", "chase")

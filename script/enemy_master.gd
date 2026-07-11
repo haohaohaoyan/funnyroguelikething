@@ -1,5 +1,7 @@
 extends Node2D
 
+@onready var Game = get_node("/root/Game")
+
 # Controls a bunch of enemies with the same behavior
 
 @export var type : String :
@@ -48,17 +50,17 @@ func _physics_process(_delta: float) -> void:
 						func (node) : return node is CharacterBody2D # Check if node is player
 					):
 						# Emit notice signal TODO
-						Global.emit_floating_text(enemy, "!", Vector2.UP, 0, Color.RED)
+						Game.emit_floating_text(enemy, "!", Vector2.UP, 0, Color.RED, 32)
 						enemy.set_meta("state", "chase")
 			"chase":
-				enemy.look_at(Global.player_position)
+				enemy.look_at(Game.player_position)
 				
 				# If not close enough to player to attack, start getting close to attack, duh!
-				enemy.velocity = (Global.player_position - enemy.global_position).normalized() * enemy_info["speed"]
+				enemy.velocity = (Game.player_position - enemy.global_position).normalized() * enemy_info["speed"]
 				enemy.move_and_slide()
 				
 				# Start attacking if close enough
-				if (enemy.global_position - Global.player_position).length() <= enemy_info["attack_distance"]:
+				if (enemy.global_position - Game.player_position).length() <= enemy_info["attack_distance"]:
 					# Change state to attack
 					enemy.set_meta("state", "attack")
 			"attack":

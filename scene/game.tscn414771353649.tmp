@@ -3,8 +3,6 @@
 [ext_resource type="Script" uid="uid://bij1i746ki85c" path="res://script/game.gd" id="1_5kiuu"]
 [ext_resource type="PackedScene" uid="uid://blrniim1lxbpn" path="res://scene/player.tscn" id="2_dbls1"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_33cqm"]
-
 [node name="Game" type="Node2D" unique_id=646541325]
 script = ExtResource("1_5kiuu")
 
@@ -63,6 +61,3 @@ offset_bottom = 11.5
 grow_horizontal = 2
 grow_vertical = 2
 text = "HP: "
-label_settings = SubResource("LabelSettings_33cqm")
-
-[node name="FloatingText" type="Node2D" parent="." unique_id=1854207524]
