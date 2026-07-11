@@ -31,6 +31,7 @@ func spawn_typed_enemy(spawn_position):
 	new_enemy.set_meta("hp", enemy_info["hp"])
 	new_enemy.set_meta("state", "idle")
 	new_enemy.set_meta("attack_state", "idle")
+	new_enemy.set_meta("knockback_velocity", Vector2(0,0))
 	
 	new_enemy.get_node("AttackArea").connect("area_entered", func (_blank) :
 		EnemyPatterns.call("on_attack_connect_" + enemy_info["attack_type"], enemy_info, new_enemy)
@@ -70,3 +71,5 @@ func _physics_process(_delta: float) -> void:
 		# Handles damage and health
 		if enemy.get_node("DamageArea").has_overlapping_bodies() or enemy.get_node("DamageArea").has_overlapping_areas():
 			EnemyPatterns.on_damage_take(enemy)
+			# Aggros them just in case 
+			enemy.set_meta("state", "chase")

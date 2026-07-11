@@ -61,7 +61,6 @@ func emit_floating_text(origin: Node2D, value : String,
 	var new_label : Object
 	if len(floating_text_available) > 0:
 		new_label = floating_text_available.pop_front()
-		floating_text_occupied.append(new_label)
 	else:
 		# Creates a new label
 		new_label = Label.new()
@@ -69,8 +68,10 @@ func emit_floating_text(origin: Node2D, value : String,
 		$FloatingText.add_child(new_label)
 		# Give it a label settings resource
 		new_label.label_settings = LabelSettings.new()
+	# It is now WORKING
+	floating_text_occupied.append(new_label)
 		
-	print("available: " + str(len(floating_text_available)) + ", occupied : " + str(len(floating_text_occupied)))
+	# print("available: " + str(len(floating_text_available)) + ", occupied : " + str(len(floating_text_occupied)))
 		
 	# print(new_label.global_position)
 	# Fill in args

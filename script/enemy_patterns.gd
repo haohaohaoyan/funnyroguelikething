@@ -39,7 +39,6 @@ func on_attack_connect_default(enemy_type, enemy):
 # Abstract enemy damage event
 func on_damage_take(enemy):
 	# Subtract from health
-	# TODO: add knockback
 	# If has not already been hit by this attack
 	if enemy not in Game.player_current_attack["enemies_hit"]:
 		# Attack damage formula: player attack base +- 15 percent, multiply by crit if critting
@@ -47,6 +46,8 @@ func on_damage_take(enemy):
 		var damage_taken = (Game.player_stats["attack_power"] + 
 			round((randf() - 0.5) * (Game.player_stats["attack_power"] * 0.15))
 			) * crit_boost
+		
+		# Add knockback
 		
 		# Emit damage number
 		await Game.emit_floating_text(enemy, str(int(damage_taken)), 
@@ -57,7 +58,6 @@ func on_damage_take(enemy):
 		if enemy.get_meta("hp") <= 0:
 			# Insert death animation
 			enemy.queue_free()
-			# Game.xp_count
 		
 		# Add to attack list so it isn't attacked again in the same hit
 		Game.player_current_attack["enemies_hit"].append(enemy)
