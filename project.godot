@@ -22,7 +22,6 @@ config/icon="res://asset/icon.svg"
 [autoload]
 
 EnemyPatterns="*uid://ba3qiogoaf02n"
-Global="*uid://cfskhcrdgbwxh"
 
 [editor_plugins]
 

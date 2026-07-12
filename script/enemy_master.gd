@@ -31,10 +31,11 @@ func spawn_typed_enemy(spawn_position):
 	new_enemy.set_meta("hp", enemy_info["hp"])
 	new_enemy.set_meta("state", "idle")
 	new_enemy.set_meta("attack_state", "idle")
+	new_enemy.set_meta("movement_velocity", Vector2(0,0))
 	new_enemy.set_meta("knockback_velocity", Vector2(0,0))
 	
 	new_enemy.get_node("AttackArea").connect("area_entered", func (_blank) :
-		EnemyPatterns.call("on_attack_connect_" + enemy_info["attack_type"], enemy_info, new_enemy)
+		EnemyPatterns.call("on_attack_connect_" + enemy_info["attack_type"], new_enemy, enemy_info)
 		)
 		
 	
@@ -57,12 +58,12 @@ func _physics_process(_delta: float) -> void:
 				enemy.look_at(Game.player_position)
 				
 				# If not close enough to player to attack, start getting close to attack, duh!
-				enemy.velocity = (Game.player_position - enemy.global_position).normalized() * enemy_info["speed"]
-				enemy.move_and_slide()
+				enemy.set_meta("movement_velocity", (Game.player_position - enemy.global_position).normalized() * enemy_info["speed"])
 				
 				# Start attacking if close enough
 				if (enemy.global_position - Game.player_position).length() <= enemy_info["attack_distance"]:
 					# Change state to attack
+					enemy.set_meta("movement_velocity", Vector2(0,0))
 					enemy.set_meta("state", "attack")
 			"attack":
 					# Pass control over to the enemy attack handler
@@ -70,6 +71,14 @@ func _physics_process(_delta: float) -> void:
 					
 		# Handles damage and health
 		if enemy.get_node("DamageArea").has_overlapping_bodies() or enemy.get_node("DamageArea").has_overlapping_areas():
-			EnemyPatterns.on_damage_take(enemy)
+			EnemyPatterns.on_damage_take(enemy, enemy_info)
 			# Aggros them just in case 
 			enemy.set_meta("state", "chase")
+			
+		# Process & add knockback velocity
+		# The enemy's own movement & knockback are stored separately to process separately
+		enemy.velocity = enemy.get_meta("movement_velocity") + enemy.get_meta("knockback_velocity")
+		# After adding, give friction to knockback velocity
+		enemy.set_meta("knockback_velocity", 
+			enemy.get_meta("knockback_velocity").move_toward(Vector2(0,0), 15)) # Delta is friction value
+		enemy.move_and_slide()

@@ -136,6 +136,8 @@ sources/0 = SubResource("TileSetAtlasSource_ukt71")
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dmi07"]
 size = Vector2(128, 128)
 
+[sub_resource type="SpriteFrames" id="SpriteFrames_5c0fr"]
+
 [node name="Floor" type="Node2D" unique_id=2143373616]
 script = ExtResource("1_36wlx")
 
@@ -161,3 +163,6 @@ shape = SubResource("RectangleShape2D_dmi07")
 
 [node name="Sprite2D" type="Sprite2D" parent="NextFloorStairway" unique_id=1181040606]
 texture = ExtResource("2_dmi07")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="NextFloorStairway/Sprite2D" unique_id=682469853]
+sprite_frames = SubResource("SpriteFrames_5c0fr")

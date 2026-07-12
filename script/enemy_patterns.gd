@@ -19,7 +19,8 @@ extends Node
 	# "speed": 80, units that enemy travels per physics process
 	# "attack_distance": 80, distance that enemy travels before starting to attack player
 	# "attack_power": 12, damage dealt to player, +- 15%
-	# "notice_distance": 150,
+	# "notice_distance": 150, radius the player has to get in to be noticed by enemy
+	# "knockback_weight": 50, changes knockback strength
 # }
 
 # Damage is handled by enemy to specify things.
@@ -27,7 +28,7 @@ extends Node
 # Abstract enemy attack event
 # Enemy type is the type-based base stats, enemy_node is the node, enemy_info is the info dict
 # Only for one-hits! Combo and chained attacks should have a dedicated attack
-func on_attack_connect_default(enemy_type, enemy):
+func on_attack_connect_default(enemy, enemy_type):
 	# Don't attack invincible dashing players
 	if not Game.player_state == "dash":
 		# Hit once, attack power plus or minus 15%
@@ -37,7 +38,7 @@ func on_attack_connect_default(enemy_type, enemy):
 	enemy.get_node("AttackArea").set_deferred("monitoring", false)
 	
 # Abstract enemy damage event
-func on_damage_take(enemy):
+func on_damage_take(enemy, enemy_type):
 	# Subtract from health
 	# If has not already been hit by this attack
 	if enemy not in Game.player_current_attack["enemies_hit"]:
@@ -48,6 +49,7 @@ func on_damage_take(enemy):
 			) * crit_boost
 		
 		# Add knockback
+		enemy.set_meta("knockback_velocity", Game.player_current_attack["direction"] * enemy_type["knockback_weight"])
 		
 		# Emit damage number
 		await Game.emit_floating_text(enemy, str(int(damage_taken)), 
@@ -71,6 +73,7 @@ var enemy_info_basic := {
 	"attack_power": 4,
 	"attack_type": "default",
 	"notice_distance": 150,
+	"knockback_weight": 300,
 }
 
 func attack_basic(enemy : Node):
