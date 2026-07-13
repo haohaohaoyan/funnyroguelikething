@@ -60,6 +60,7 @@ func on_damage_take(enemy, enemy_type):
 		if enemy.get_meta("hp") <= 0:
 			# Insert death animation
 			enemy.queue_free()
+			Game.give_xp(1)
 		
 		# Add to attack list so it isn't attacked again in the same hit
 		Game.player_current_attack["enemies_hit"].append(enemy)

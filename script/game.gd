@@ -5,6 +5,7 @@ const TRANSITION_DURATION = 0.5
 
 # Pointers for UI elements
 @onready var hp_bar = $HUDLayer/HUD/HPBar
+@onready var xp_bar = $HUDLayer/HUD/XPBar
 
 # Information pertinent to current game
 
@@ -18,7 +19,6 @@ const TRANSITION_DURATION = 0.5
 var player_position : Vector2 = Vector2(0,0)
 var player_state : String = "idle"
 
-signal player_health_changed(new_health)
 var player_max_health : int = 50 :
 	set(new_max_health) : 
 		# Increase health by increment if positive but still caps it to max
@@ -29,7 +29,7 @@ var player_health : int = 50 :
 	set(new_health) : 
 		# Emit health change signal to game scene
 		player_health = new_health
-		player_health_changed.emit(new_health)
+		hp_bar.get_node("Label").text = "HP: " + str(new_health) + "/" + str(player_max_health)
 
 # List of nodes already hit by the current attack to avoid dealing 5000 hits in a second
 var player_current_attack := {
@@ -44,7 +44,26 @@ var player_stats := {
 	"critical_bonus": 3, # Number to multiply by on critical
 }
 
-var player_xp
+# Player level, current XP count, this level's necessary amount
+var player_level := {
+	"level": 0,
+	"current_xp": 0,
+	"this_level_req": 8, 
+}
+
+# Setter, definitely
+func give_xp(xp):
+	player_level["current_xp"] += xp
+	if player_level["current_xp"] == player_level["this_level_req"]:
+		print("gawdam i levelled uip wowee")
+		player_level["current_xp"] = 0
+		player_level["level"] += 1
+		player_level["this_level_req"] = round(player_level["this_level_req"] * 1.5)
+		
+	# Update UI
+	xp_bar.max_value = player_level["this_level_req"]
+	xp_bar.value = player_level["current_xp"]
+	xp_bar.get_node("Label").text = "Level "+ str(player_level["level"])
 
 # Things for creating floating text 
 var floating_text_available := []
@@ -70,9 +89,7 @@ func emit_floating_text(origin: Node2D, value : String,
 		new_label.label_settings = LabelSettings.new()
 	# It is now WORKING
 	floating_text_occupied.append(new_label)
-		
-	# print("available: " + str(len(floating_text_available)) + ", occupied : " + str(len(floating_text_occupied)))
-		
+	
 	# print(new_label.global_position)
 	# Fill in args
 	new_label.text = value
@@ -147,11 +164,6 @@ func gameplay_main():
 	current_floor.queue_free()
 
 func _ready():
-	# Connect signals for health changes from Globals
-	connect("player_health_changed", func (hp_value) :
-		hp_bar.get_node("Label").text = "HP: " + str(hp_value) + "/" + str(player_max_health)
-		)
-	
 	# Set starting stats to trigger setters
 	player_max_health = 50
 	player_health = 50
