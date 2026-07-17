@@ -50,16 +50,25 @@ var upgrade_info = {
 	
 	"higher_crit_2": {
 		"title": "Complete refactor",
-		"description": "+50% crit damage",
+		"description": "Boosted crit damage",
 		"stat_changes": {
 			"critical_bonus": 0.5,
 		},
 		"prerequisites": ["higher_crit_1"]
 	},
 	
+	"crit_rush": {
+		"title": "Dopamine hit",
+		"description": "+6 base damage for one second after hitting a critical hit, \nbut critical hits deal less damage",
+		"stat_changes": {
+			"critical_rush": 1,
+			"critical_bonus": -1
+		}, 
+	},
+	
 	"max_health_add_1": {
 		"title": "Caffeine",
-		"description": "+20 max HP",
+		"description": "+10 max HP",
 		"stat_changes": {
 			"max_health": 20
 		},
@@ -68,7 +77,7 @@ var upgrade_info = {
 	
 	"max_health_add_2": {
 		"title": "Instant noodle pack",
-		"description": "+30 max HP",
+		"description": "+20 max HP",
 		"stat_changes": {
 			"max_health": 30
 		},
@@ -90,6 +99,32 @@ var upgrade_info = {
 		"description": "+3 HP healed per floor",
 		"stat_changes": {
 			"autoheal": 3
+		}
+	},
+	
+	"autoheal_2": {
+		"title": "Alarm clock setback", 
+		"description": "+5 HP healed per floor but attack cooldown is longer",
+		"stat_changes": {
+			"autoheal": 5,
+			"attack_cooldown": 0.3
+		},
+		"prerequisites": ["autoheal_1"]
+	},
+	
+	"counter_damage_1": {
+		"title": "On a roll",
+		"description": "+2 damage boost after countering (dash right before an enemy hits you)",
+		"stat_changes": {
+			"counter_damage": 2
+		}
+	}, 
+	
+	"counter_length_1": {
+		"title": "Prolonged celebration",
+		"description": "+0.5 seconds of boost on countering (dash right before an enemy hits you)",
+		"stat_changes": {
+			"counter_length": 0.5
 		}
 	}
 }

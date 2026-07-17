@@ -115,5 +115,22 @@ func _ready():
 		$DodgeDetect.monitoring = false
 		set_collision_mask_value(2, true)
 		$DodgeDetect.global_position = global_position) # debug for when collisions are visible
+	# Connect dodge window to counter/flurry rush
+	$DodgeDetect.connect("area_entered", func (_blank) :
+		# avoid multiple triggers
+		$DodgeDetect.set_deferred("monitoring", false)
+		if is_instance_valid(Game.current_counter_tween):
+			Game.current_counter_tween.kill()
+			# Game.player_stats["attack_power"] -= Game.player_stats["counter_damage"]
+			
+		# Emit announcement
+		Game.emit_floating_text(self, "COUNTER", Vector2.DOWN, 0, Color.YELLOW, 32)
+		
+		Game.current_counter_tween = Game.create_tween()
+		Game.player_stats["attack_power"] += Game.player_stats["counter_damage"]
+		Game.current_counter_tween.tween_interval(Game.player_stats["counter_length"])
+		Game.current_counter_tween.tween_callback(func () :
+			Game.player_stats["attack_power"] -= Game.player_stats["counter_damage"])
+		)
 		
 	

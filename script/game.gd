@@ -25,8 +25,9 @@ signal game_over
 var player_max_health : int = 50 :
 	set(new_max_health) : 
 		# Increase health by increment if positive but still caps it to max
-		player_health += max(0, new_max_health - player_max_health)
+		var old_max_health = player_max_health # needs to be preserved
 		player_max_health = new_max_health
+		player_health += max(0, new_max_health - old_max_health)
 		hp_bar.get_node("Label").text = "HP: " + str(player_health) + "/" + str(player_max_health)
 		hp_bar.max_value = new_max_health
 
@@ -55,7 +56,14 @@ var player_stats := {
 	"critical_chance": 0.05, # Chance out of 1 that an attack is critical
 	"critical_bonus": 3, # Number to multiply by on critical
 	"autoheal": 0, # Value to heal by at end of each floor
+	"critical_rush": 0, # int boolean, if raised grants 1 second of increased base damage after crit
+	"counter_damage": 3, # int, damage boost on split second dodge
+	"counter_length": 0.5, # int, seconds for which counter damage boost lasts
 }
+
+# Other more specific things
+var current_rush_tween : Tween = null
+var current_counter_tween : Tween = null
 
 # Player level, current XP count, this level's necessary amount
 var player_level := {
@@ -70,7 +78,7 @@ var current_upgrades := []
 # Setter, definitely
 func give_xp(xp):
 	player_level["current_xp"] += xp
-	if player_level["current_xp"] == player_level["this_level_req"]:
+	if player_level["current_xp"] >= player_level["this_level_req"]:
 		# Update stats
 		player_level["current_xp"] = 0
 		player_level["level"] += 1

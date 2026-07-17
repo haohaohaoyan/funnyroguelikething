@@ -24,9 +24,11 @@ var Game # filled in by game when used
 	# "attack_collision_transform": Vector2 detailing position of attack
 	# "attack_power": 12, damage dealt to player, +- 15%
 	# "attack_windup": 0.2, time in seconds in which it takes to hit the player
+	# "attack_time": 0.2, time for which the attack is active
 	# "attack_cooldown": time until next attack can occur
 	# "notice_distance": 150, radius the player has to get in to be noticed by enemy
 	# "knockback_weight": 300, changes knockback strength
+	# "xp_value": 2, amount of xp given to player
 # }
 
 # Damage is handled by enemy to specify things.
@@ -62,6 +64,20 @@ func on_damage_take(enemy, enemy_type):
 		if crit_boost > 1:
 			Game.call_deferred("emit_floating_text", enemy, "CRITICAL " + str(int(damage_taken)), 
 			Game.player_current_attack["direction"], 0.3, Color.GREEN, 32)
+			# Trigger critical boost
+			if Game.player_stats["critical_rush"] == 1:
+				Game.emit_floating_text(enemy, "CRITICAL RUSH", Vector2.DOWN, 0.3, Color.GREEN_YELLOW, 32)
+				# First kill old tween
+				if is_instance_valid(Game.current_rush_tween):
+					Game.current_rush_tween.kill()
+					Game.player_stats["attack_power"] -= 6
+					
+				Game.current_rush_tween = Game.create_tween()
+				Game.player_stats["attack_power"] += 6
+				Game.current_rush_tween.tween_interval(1)
+				Game.current_rush_tween.tween_callback(func () :
+					Game.player_stats["attack_power"] -= 6
+					)
 		else:
 			Game.call_deferred("emit_floating_text", enemy, str(int(damage_taken)), 
 		Game.player_current_attack["direction"], 0.7)
@@ -71,7 +87,7 @@ func on_damage_take(enemy, enemy_type):
 		if enemy.get_meta("hp") <= 0:
 			# Insert death animation
 			enemy.call_deferred("queue_free")
-			Game.give_xp(1)
+			Game.give_xp(enemy_type["xp_value"])
 		
 		# Add to attack list so it isn't attacked again in the same hit
 		Game.player_current_attack["enemies_hit"].append(enemy)
@@ -89,9 +105,11 @@ var enemy_info_medium := {
 	"attack_power": 5,
 	"attack_type": "default",
 	"attack_windup": 0.2,
-	"attack_cooldown": 1.2,
+	"attack_time": 0.2,
+	"attack_cooldown": 0.8,
 	"notice_distance": 150,
 	"knockback_weight": 300,
+	"xp_value": 2,
 }
 
 func attack_medium(enemy : Node):
@@ -140,9 +158,11 @@ var enemy_info_small := {
 	"attack_power": 3,
 	"attack_type": "default",
 	"attack_windup": 0.4,
+	"attack_time": 0.4,
 	"attack_cooldown": 0.5,
 	"notice_distance": 180,
 	"knockback_weight": 500,
+	"xp_value": 1,
 }
 
 func attack_small(enemy: Node):
@@ -154,16 +174,57 @@ func attack_small(enemy: Node):
 		# Tweens are assigned to enemy so that they are cleaned up when it dies
 		var attack_process = enemy.create_tween()
 		# enemy brightens while winding up
+		attack_process.tween_property(enemy, "modulate", Color(2,2,2,1), enemy_info_large["attack_windup"])
+		await attack_process.finished
+		enemy.modulate = Color(1,1,1,1)
+		enemy.get_node("AttackArea").monitoring = true
+		
+		# set momentum
+		
+		var dash_direction = (enemy.global_position - Game.player_position).normalized()
+		var dash_momentum = dash_direction * 100
+		
+		enemy.velocity = dash_momentum
+		
+		enemy.set_meta("attack_state", "idle") # back to movement
+		
+		# Sets timers to stop attacking and to attack again
+		var attack_finish_tween = enemy.create_tween()
+		attack_finish_tween.tween_interval(enemy_info_large["attack_time"])
+		attack_finish_tween.tween_callback(func () : 
+			enemy.get_node("AttackArea").monitoring = false)
+			
+	if (enemy.global_position - Game.player_position).length() >= enemy_info_large["attack_distance"]:
+		enemy.set_meta("state", "chase")
+
+var enemy_info_large := {
+	"animation_resource": "res://asset/enemy_assets/largeenemy.tres",
+	"collision_radius": 30,
+	"hp": 100, 
+	"speed": 50,
+	"attack_distance": 100, 
+	"attack_collision_resource": "res://asset/enemy_assets/largeenemyattack.tres",
+	"attack_collision_transform": Vector2(50,0),
+	"attack_power": 12,
+	"attack_type": "default",
+	"attack_windup": 0.8,
+	"attack_time": 0.2,
+	"attack_cooldown": 1.2,
+	"notice_distance": 150,
+	"knockback_weight": 100,
+	"xp_value" : 3,
+}
+
+func attack_large(enemy: Node):
+	# Same damn attack as normal but I'm too lazy to make them point to the same thing
+	if enemy.get_meta("attack_state") == "idle":
+		enemy.set_meta("attack_state", "attacking")
+		var attack_process = enemy.create_tween()
 		attack_process.tween_property(enemy, "modulate", Color(2,2,2,1), enemy_info_medium["attack_windup"])
 		await attack_process.finished
 		enemy.modulate = Color(1,1,1,1)
 		enemy.get_node("AttackArea").monitoring = true
 		enemy.set_meta("attack_state", "attack-cooldown")
-		
-		# Hits once with a slightly randomized attack value and deactivates to only hit once
-		# Handled in default attack
-		
-		# Sets timers to stop attacking and to attack again
 		var attack_finish_tween = enemy.create_tween()
 		attack_finish_tween.tween_interval(0.2)
 		attack_finish_tween.tween_callback(func () : 
@@ -177,23 +238,8 @@ func attack_small(enemy: Node):
 	if (enemy.global_position - Game.player_position).length() >= enemy_info_medium["attack_distance"]:
 		enemy.set_meta("state", "chase")
 
-var enemy_info_large := {
-	"animation_resource": "res://asset/enemy_assets/largeenemy.tres",
-	"collision_radius": 30,
-	"hp": 100, 
-	"speed": 50,
-	"attack_distance": 100, 
-	"attack_collision_resource": "res://asset/enemy_assets/largeenemyattack.tres",
-	"attack_collision_transform": Vector2(50,0),
-	"attack_power": 12,
-	"attack_type": "default",
-	"attack_windup": 1,
-	"attack_cooldown": 0.5,
-	"notice_distance": 150,
-	"knockback_weight": 100,
-}
-
 # Possible enemy patterns for different types of floors
+# They're all randomized by like 1 or 2
 var enemy_spawning_patterns := {
 	"easy": [
 		{"small": 6, "medium": 4},
@@ -201,5 +247,13 @@ var enemy_spawning_patterns := {
 		{"small": 5, "medium": 8},
 		{"small": 4, "medium": 3, "large": 1},
 		{"small": 2, "medium": 5, "large": 1}
+	],
+	"medium": [
+		{"small": 8, "medium": 6, "large": 2},
+		{"small": 16}, # hahahaha funny
+		{"small": 4, "medium": 5, "large": 3},
+		{"small": 6, "medium": 6, "large": 1},
+		{"small": 5, "medium": 7, "large": 2},
+		{"medium": 9, "large": 4}
 	]
 }
