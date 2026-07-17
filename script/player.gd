@@ -16,6 +16,10 @@ var state: String = "idle"
 
 # Main movement loop, obviously
 func _physics_process(_delta: float) -> void:
+	# Don't do anything if you aren't supposed to be moving
+	if !Game.floor_active:
+		return
+	
 	# Basic movement
 	var direction = Input.get_vector("LEFT", "RIGHT", "UP", "DOWN").normalized()
 	if direction:
@@ -37,8 +41,9 @@ func _physics_process(_delta: float) -> void:
 			# Cooldown timers are for until next of either action, so after dashing you can only dash or move again after that amount of time
 			# Attack on left click with more variable but shorter distance
 			if $AtkCooldown.is_stopped() and event.button_mask == 1:
+				$AtkCooldown.wait_time = Game.player_stats["attack_cooldown"]
 				$AtkCooldown.start()
-				move_length = [180, 250]
+				move_length = [Game.player_stats["attack_range"] - 50, Game.player_stats["attack_range"] + 50]
 				state = "attack"
 				
 				# Rotate damage hitbox to face the click direction, update direction to match
@@ -54,8 +59,9 @@ func _physics_process(_delta: float) -> void:
 				
 			# Dash on right click
 			elif $DashCooldown.is_stopped() and event.button_mask == 2: # a bit long ik but this makes logic look better
+				$DashCooldown.wait_time = Game.player_stats["dash_cooldown"]
 				$DashCooldown.start()
-				move_length = [370,400]
+				move_length = [Game.player_stats["dash_range"] - 20, Game.player_stats["dash_range"] + 20]
 				state = "dash"
 				
 				# Disable collision with enemies to dash through them
@@ -84,6 +90,7 @@ func _physics_process(_delta: float) -> void:
 	
 	# Movements are separate to make dashing have a more expected behavior
 	velocity = base_move_velocity + dash_velocity
+	
 	move_and_slide()
 	
 	# Update globals related to player

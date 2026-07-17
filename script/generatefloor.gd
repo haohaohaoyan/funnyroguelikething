@@ -16,11 +16,27 @@ var enemy_script = load("res://script/enemy_master.gd")
 
 # Main setup, handles others
 # Room thing positions are handled by the LayoutTiles. Actual collision and details are handled by FullFloorTiles
-func setup():
+func setup(current_floor_count):
 	# Generate map first
 	layout_tiles.set_cell(Vector2i(0,0), 0, Vector2i(0,0))
 	
-	var player_start = to_global(layout_tiles.map_to_local(grow_map(3, 0.5)[-1]))
+	# Set floor iteration count based on difficulty
+	var floor_grow
+	var spawn_difficulty
+	if current_floor_count <= 4:
+		floor_grow = 2
+		spawn_difficulty = "easy"
+	elif current_floor_count <= 9:
+		floor_grow = 3
+		spawn_difficulty = "medium"
+	elif current_floor_count <= 13:
+		floor_grow = 4
+		spawn_difficulty = "hard"
+	else: # floor 14 is boss
+		floor_grow = 2
+		spawn_difficulty = "boss"
+	
+	var player_start = to_global(layout_tiles.map_to_local(grow_map(floor_grow, 0.5)[-1]))
 	
 	$NextFloorStairway.position = to_global(layout_tiles.map_to_local(grow_map(1,0.3)[-1])) * Vector2(2,2)
 	
@@ -36,8 +52,11 @@ func setup():
 	for room in layout_tiles.get_used_cells():
 		global_room_positions.append(to_global(layout_tiles.map_to_local(room)) * Vector2(layout_tiles.scale.x, layout_tiles.scale.y)) # for some reason it doesnt take in scale
 	
-	# Add enemies by type 
-	spawn_enemies("basic", 12, global_room_positions, 150, 3)
+	# Add enemies by type based on the spawn difficulty
+	var spawn_dict = EnemyPatterns.enemy_spawning_patterns[spawn_difficulty].pick_random()
+	for enemy_type in spawn_dict:
+		spawn_enemies(enemy_type, spawn_dict[enemy_type], global_room_positions, 128, 3)
+		# TODO need to randomize this
 	
 	var output = {
 		"player_start_pos": player_start

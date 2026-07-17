@@ -1,0 +1,14 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://cpf46e6v6m8eg"]
+
+[ext_resource type="Texture2D" uid="uid://bwgklo1727udo" path="res://asset/enemy_assets/largeenemy.png" id="1_4i2kt"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_4i2kt")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]

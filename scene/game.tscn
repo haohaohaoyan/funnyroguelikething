@@ -5,6 +5,13 @@
 
 [sub_resource type="LabelSettings" id="LabelSettings_33cqm"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_dbls1"]
+font_size = 24
+
+[sub_resource type="LabelSettings" id="LabelSettings_5c0fr"]
+line_spacing = 0.0
+font_size = 82
+
 [node name="Game" type="Node2D" unique_id=646541325]
 script = ExtResource("1_5kiuu")
 
@@ -19,6 +26,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 color = Color(0, 0, 0, 1)
 metadata/_edit_use_anchors_ = true
 
@@ -81,4 +89,108 @@ grow_vertical = 2
 text = "HP: "
 label_settings = SubResource("LabelSettings_33cqm")
 
+[node name="FloorCounter" type="Label" parent="HUDLayer/HUD" unique_id=781228945]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -53.0
+offset_top = -23.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Floor 1"
+label_settings = SubResource("LabelSettings_dbls1")
+horizontal_alignment = 2
+
 [node name="FloatingText" type="Node2D" parent="." unique_id=1854207524]
+
+[node name="UpgradeMenu" type="CanvasLayer" parent="." unique_id=1942636719]
+visible = false
+
+[node name="Base" type="Control" parent="UpgradeMenu" unique_id=531947469]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+offset_transform_enabled = true
+
+[node name="Panel" type="Panel" parent="UpgradeMenu/Base" unique_id=630455682]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -225.0
+offset_right = 300.0
+offset_bottom = 225.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="UpgradeMenu/Base/Panel" unique_id=489045550]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="UpgradeContainer" type="VBoxContainer" parent="UpgradeMenu/Base/Panel/MarginContainer" unique_id=1526477716]
+layout_mode = 2
+
+[node name="Instruction" type="Label" parent="UpgradeMenu/Base/Panel/MarginContainer/UpgradeContainer" unique_id=1469621196]
+layout_mode = 2
+size_flags_vertical = 0
+text = "choose upgrade"
+horizontal_alignment = 1
+
+[node name="GameOverScreen" type="CanvasLayer" parent="." unique_id=458442817]
+visible = false
+
+[node name="Panel" type="Panel" parent="GameOverScreen" unique_id=610325065]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GameOverScreen/Panel" unique_id=1014968025]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BigAssLabel" type="Label" parent="GameOverScreen/Panel/VBoxContainer" unique_id=15434108]
+layout_mode = 2
+text = "Game Over"
+label_settings = SubResource("LabelSettings_5c0fr")
+
+[node name="Label" type="Label" parent="GameOverScreen/Panel/VBoxContainer" unique_id=1721342143]
+layout_mode = 2
+text = "Another side project abandoned"
+horizontal_alignment = 1
+
+[node name="Replay" type="Button" parent="GameOverScreen/Panel/VBoxContainer" unique_id=488076700]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "start a new one?"
+
+[connection signal="game_over" from="." to="." method="_on_game_over"]
+[connection signal="pressed" from="GameOverScreen/Panel/VBoxContainer/Replay" to="." method="_on_restart"]

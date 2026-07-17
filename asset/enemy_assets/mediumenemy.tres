@@ -1,0 +1,14 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://cel5n1hmr34vs"]
+
+[ext_resource type="Texture2D" uid="uid://dcb8tjw1utl6c" path="res://asset/enemy_assets/mediumenemy.png" id="1_pscgg"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_pscgg")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]

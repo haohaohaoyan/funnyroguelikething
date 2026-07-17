@@ -38,13 +38,12 @@ collision_layer = 0
 shape = SubResource("CircleShape2D_h08p8")
 
 [node name="AttackArea" type="Area2D" parent="." unique_id=71446596]
-visible = false
 collision_layer = 0
 collision_mask = 8
 monitoring = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=884598219]
-position = Vector2(54, 0)
+position = Vector2(50, 0)
 shape = SubResource("RectangleShape2D_5c0fr")
 
 [node name="DamageArea" type="Area2D" parent="." unique_id=1037615836]

@@ -1,6 +1,7 @@
 extends Node2D
 
 @onready var floor_packed = preload("res://scene/level.tscn")
+@onready var upgrade_box_template = preload("res://upgrades/upgrade_box.tscn")
 const TRANSITION_DURATION = 0.5
 
 # Pointers for UI elements
@@ -19,17 +20,24 @@ const TRANSITION_DURATION = 0.5
 var player_position : Vector2 = Vector2(0,0)
 var player_state : String = "idle"
 
+signal game_over
+
 var player_max_health : int = 50 :
 	set(new_max_health) : 
 		# Increase health by increment if positive but still caps it to max
-		player_health += max(min(0, new_max_health - player_max_health), new_max_health)
+		player_health += max(0, new_max_health - player_max_health)
 		player_max_health = new_max_health
+		hp_bar.get_node("Label").text = "HP: " + str(player_health) + "/" + str(player_max_health)
+		hp_bar.max_value = new_max_health
 
 var player_health : int = 50 :
 	set(new_health) : 
 		# Emit health change signal to game scene
-		player_health = new_health
+		player_health = min(new_health, player_max_health)
 		hp_bar.get_node("Label").text = "HP: " + str(new_health) + "/" + str(player_max_health)
+		hp_bar.value = new_health
+		if player_health <= 0:
+			game_over.emit()
 
 # List of nodes already hit by the current attack to avoid dealing 5000 hits in a second
 var player_current_attack := {
@@ -40,8 +48,13 @@ var player_current_attack := {
 # Extra player stats that can be changed by upgrades and weapons
 var player_stats := {
 	"attack_power": 18, # Base damage points per attack
-	"critical_chance": 0.1, # Chance out of 1 that an attack is critical
+	"attack_cooldown": 0.15, # Time between attacks
+	"attack_range": 200, # Attack distance, plus/minus 100
+	"dash_cooldown": 0.8, # Dash wait cooldown
+	"dash_range": 400, # Dash distance, plus/minus 20
+	"critical_chance": 0.05, # Chance out of 1 that an attack is critical
 	"critical_bonus": 3, # Number to multiply by on critical
+	"autoheal": 0, # Value to heal by at end of each floor
 }
 
 # Player level, current XP count, this level's necessary amount
@@ -51,19 +64,112 @@ var player_level := {
 	"this_level_req": 8, 
 }
 
+# Array of upgrades
+var current_upgrades := []
+
 # Setter, definitely
 func give_xp(xp):
 	player_level["current_xp"] += xp
 	if player_level["current_xp"] == player_level["this_level_req"]:
-		print("gawdam i levelled uip wowee")
+		# Update stats
 		player_level["current_xp"] = 0
 		player_level["level"] += 1
 		player_level["this_level_req"] = round(player_level["this_level_req"] * 1.5)
+		upgrade_select()
 		
 	# Update UI
 	xp_bar.max_value = player_level["this_level_req"]
 	xp_bar.value = player_level["current_xp"]
 	xp_bar.get_node("Label").text = "Level "+ str(player_level["level"])
+	
+# Criteria checker to make sure that the upgrade fits its own criteria
+func upgrade_filter(upgrade_name):
+	# Flags
+	var prerequisites_met = false
+	var not_a_duplicate = false
+	
+	var upgrade = Upgrades.upgrade_info[upgrade_name]
+	prerequisites_met = false
+	not_a_duplicate = false
+	# Check for prerequisite meeting
+	if "prerequisites" in upgrade:
+		for prereq in upgrade["prerequisites"]:
+			if prereq in current_upgrades:
+				prerequisites_met = true
+	else:
+		prerequisites_met = true
+		
+	# Check if this upgrade is already in the thing
+	if not "duplicate" in upgrade:
+		if not upgrade_name in current_upgrades:
+			not_a_duplicate = true
+	else:
+		not_a_duplicate = true
+		
+	if (not prerequisites_met) or (not not_a_duplicate):
+		# reset upgrade and try again
+		upgrade_name = Upgrades.upgrade_info.keys().pick_random()
+		upgrade_name = upgrade_filter(upgrade_name)
+	return upgrade_name
+		
+	# Return after limit anyway
+	# return upgrade_name
+
+# Handling the upgrade menu
+func upgrade_select():
+	# Do the upgrade menu things
+	$UpgradeMenu.visible = true
+	floor_active = false
+	# Also remove all previous upgrade slots
+	for child in $UpgradeMenu/Base/Panel/MarginContainer/UpgradeContainer.get_children():
+		if !child is Label:
+			child.queue_free()
+	
+	var current_upgrade_selection = []
+	# Decide on upgrades and add them
+	for i in range(3):
+		# Create upgrade selection box
+		var upgrade_name = Upgrades.upgrade_info.keys().pick_random()
+		
+		# Check upgrade against rules
+		upgrade_name = upgrade_filter(upgrade_name)
+		
+		while upgrade_name in current_upgrade_selection:
+			upgrade_name = Upgrades.upgrade_info.keys().pick_random()
+			upgrade_name = upgrade_filter(upgrade_name)
+
+		current_upgrade_selection.append(upgrade_name)
+		
+		# Add to list of displayed upgrades
+		var upgrade = Upgrades.upgrade_info[upgrade_name]
+		
+		var upgrade_box = upgrade_box_template.instantiate()
+		upgrade_box.get_node("MarginContainer/VBoxContainer/Title").text = upgrade["title"]
+		upgrade_box.get_node("MarginContainer/VBoxContainer/Description").text = upgrade["description"]
+		$UpgradeMenu/Base/Panel/MarginContainer/UpgradeContainer.add_child(upgrade_box)
+		
+		# Funny effect, also forces player to notice menu
+		await get_tree().create_timer(0.2).timeout
+		
+		# Make the upgrade do its thing
+		upgrade_box.connect("pressed", func ():
+			for stat in upgrade["stat_changes"].keys():
+				# Max health is separate from other stats
+				if stat == "max_health":
+					player_max_health += upgrade["stat_changes"]["max_health"]
+				else:
+					player_stats[stat] += upgrade["stat_changes"][stat]
+			# Add to upgrade list
+			current_upgrades.append(upgrade_name)
+			# Resume normal operation
+			floor_active = true
+			$UpgradeMenu.visible = false
+			)
+			
+	# Enable buttons
+	for child in $UpgradeMenu/Base/Panel/MarginContainer/UpgradeContainer.get_children():
+		if !child is Label:
+			child.disabled = false
 
 # Things for creating floating text 
 var floating_text_available := []
@@ -124,7 +230,7 @@ func gameplay_main():
 	var current_floor = floor_packed.instantiate()
 	add_child(current_floor)
 		
-	var current_floor_data =  await current_floor.setup()
+	var current_floor_data =  await current_floor.setup(floor_count)
 	
 	$Player.position = current_floor_data["player_start_pos"]
 	$Player/Camera2D.position = Vector2i(0,0)
@@ -150,6 +256,9 @@ func gameplay_main():
 		
 	await current_floor.next_floor
 	
+	# Do autoheal
+	player_health += player_stats["autoheal"]
+	
 	# Stop floor activity
 	floor_active = false
 	
@@ -163,10 +272,34 @@ func gameplay_main():
 	# clean up
 	current_floor.queue_free()
 
+var floor_count = 1
+
 func _ready():
 	# Set starting stats to trigger setters
 	player_max_health = 50
 	player_health = 50
 	
+	# Set global game reference
+	EnemyPatterns.Game = self
+	Upgrades.Game = self
+	
 	while true:
 		await gameplay_main()
+		floor_count += 1
+		$HUDLayer/HUD/FloorCounter.text = "Floor " + str(floor_count)
+		
+func _on_game_over() -> void:
+	$GameOverScreen.visible = true
+	$Player.visible = false
+	floor_active = false
+		
+func _on_restart():
+	# screen transition again
+	var fade_in = get_tree().create_tween()
+	$ScreenTransition/ColorRect.color = Color(0,0,0,0)
+	fade_in.tween_property($ScreenTransition/ColorRect, "color", Color(0,0,0,1), TRANSITION_DURATION)
+	await fade_in.finished
+	fade_in.kill()
+	
+	# restart entire scene
+	get_tree().reload_current_scene()

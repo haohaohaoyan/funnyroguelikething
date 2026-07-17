@@ -8,8 +8,12 @@ extends Node2D
 	set(new_type):
 		type = new_type
 		enemy_info = EnemyPatterns.get("enemy_info_" + new_type)
+		enemy_animation_base = load(enemy_info["animation_resource"])
+		enemy_attack_hitbox = load(enemy_info["attack_collision_resource"])
 
 var enemy_scene_base = preload("res://scene/enemy.tscn")
+var enemy_animation_base # Depends on enemy type
+var enemy_attack_hitbox # Also depends on enemy type
 
 # Dictionary of enemy stat constants like speed and stuff
 var enemy_info : Dictionary
@@ -24,8 +28,12 @@ func spawn_typed_enemy(spawn_position):
 	add_child(new_enemy)
 	new_enemy.global_position = spawn_position
 	
-	# Set the notice radius according to this enemy group's type
+	# Set things according to enemy type
 	new_enemy.get_node("SightArea/CollisionShape2D").shape.radius = enemy_info["notice_distance"]
+	new_enemy.get_node("CollisionShape2D").shape.radius = enemy_info["collision_radius"]
+	new_enemy.get_node("AttackArea/CollisionShape2D").shape = enemy_attack_hitbox
+	new_enemy.get_node("AttackArea/CollisionShape2D").position = enemy_info["attack_collision_transform"]
+	new_enemy.get_node("AnimatedSprite2D").sprite_frames = enemy_animation_base
 	
 	# Set metadata about hp, state, attack state, etc
 	new_enemy.set_meta("hp", enemy_info["hp"])
@@ -38,8 +46,9 @@ func spawn_typed_enemy(spawn_position):
 		EnemyPatterns.call("on_attack_connect_" + enemy_info["attack_type"], new_enemy, enemy_info)
 		)
 		
-	
 func _physics_process(_delta: float) -> void:
+	if !Game.floor_active:
+		return
 	# Handles movement & actions
 	for enemy in get_children():
 		# Per-enemy script
@@ -51,7 +60,6 @@ func _physics_process(_delta: float) -> void:
 					if enemy.get_node("SightArea").get_overlapping_bodies().any(
 						func (node) : return node is CharacterBody2D # Check if node is player
 					):
-						# Emit notice signal TODO
 						Game.emit_floating_text(enemy, "!", Vector2.UP, 0, Color.RED, 32)
 						enemy.set_meta("state", "chase")
 			"chase":
@@ -81,4 +89,5 @@ func _physics_process(_delta: float) -> void:
 		# After adding, give friction to knockback velocity
 		enemy.set_meta("knockback_velocity", 
 			enemy.get_meta("knockback_velocity").move_toward(Vector2(0,0), 15)) # Delta is friction value
+		
 		enemy.move_and_slide()

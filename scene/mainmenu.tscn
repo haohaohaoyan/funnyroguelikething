@@ -1,0 +1,55 @@
+[gd_scene format=3 uid="uid://bnq5pstj7pap2"]
+
+[sub_resource type="GDScript" id="GDScript_rry36"]
+script/source = "extends Control
+
+func _ready():
+	$VBoxContainer/Button.connect(\"pressed\", func ():
+		get_tree().change_scene_to_file(\"res://scene/game.tscn\")
+		)
+"
+
+[sub_resource type="LabelSettings" id="LabelSettings_5c0fr"]
+font_size = 42
+
+[node name="Menu" type="Control" unique_id=239744671]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_rry36")
+
+[node name="Panel" type="Panel" parent="." unique_id=1337951404]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=2075697013]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -305.0
+offset_top = -46.5
+offset_right = 305.0
+offset_bottom = 46.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="VBoxContainer" unique_id=1884712011]
+layout_mode = 2
+text = "SOLO DEVELOPER SIMULATOR"
+label_settings = SubResource("LabelSettings_5c0fr")
+
+[node name="Button" type="Button" parent="VBoxContainer" unique_id=1790581251]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "play button
+"
