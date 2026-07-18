@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://cr74hr0inxlam"]
+
+[ext_resource type="SpriteFrames" uid="uid://nqn1asvj7i8e" path="res://asset/enemy_assets/bullet_anim.tres" id="1_dfd7w"]
+
+[sub_resource type="GDScript" id="GDScript_5c0fr"]
+script/source = "extends CharacterBody2D
+
+# Moves the bullet and kills it on collision. That's literally damn it.
+# Like literally. Why can't I just edit this from the main enemy?
+# AAAAAAAGHHHHHHHHHHHHHHHHHHHHHHHHHHH
+
+signal collided
+
+func _physics_process(_delta: float) -> void:
+	if move_and_slide():
+		if get_last_slide_collision().get_collider() is CharacterBody2D:
+			collided.emit()
+		call_deferred(\"queue_free\")
+"
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5c0fr"]
+radius = 4.5
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_dfd7w"]
+radius = 6.0
+
+[node name="BossBullet" type="CharacterBody2D" unique_id=936630242]
+scale = Vector2(2, 2)
+collision_layer = 0
+script = SubResource("GDScript_5c0fr")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1676882529]
+shape = SubResource("CircleShape2D_5c0fr")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=800016198]
+position = Vector2(-1.9073486e-06, 0)
+sprite_frames = ExtResource("1_dfd7w")
+frame_progress = 0.53828585
+
+[node name="DamageArea" type="Area2D" parent="." unique_id=1419455865]
+collision_layer = 8
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DamageArea" unique_id=801973613]
+shape = SubResource("CircleShape2D_dfd7w")

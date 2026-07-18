@@ -1,0 +1,25 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://nqn1asvj7i8e"]
+
+[ext_resource type="Texture2D" uid="uid://1d5rcnhymiyp" path="res://asset/enemy_assets/bullet.png" id="1_c5g6a"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tbwox"]
+atlas = ExtResource("1_c5g6a")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_immcd"]
+atlas = ExtResource("1_c5g6a")
+region = Rect2(16, 0, 16, 16)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tbwox")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_immcd")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]

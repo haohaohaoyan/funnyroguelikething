@@ -49,6 +49,7 @@ var player_current_attack := {
 # Extra player stats that can be changed by upgrades and weapons
 var player_stats := {
 	"attack_power": 18, # Base damage points per attack
+	"attack_bonus": 0, # Calculated and added to attack on hit
 	"attack_cooldown": 0.15, # Time between attacks
 	"attack_range": 200, # Attack distance, plus/minus 100
 	"dash_cooldown": 0.8, # Dash wait cooldown
@@ -59,6 +60,7 @@ var player_stats := {
 	"critical_rush": 0, # int boolean, if raised grants 1 second of increased base damage after crit
 	"counter_damage": 3, # int, damage boost on split second dodge
 	"counter_length": 0.5, # int, seconds for which counter damage boost lasts
+	"counter_heal": 0, # int, amount to heal by when triggering counter
 }
 
 # Other more specific things
@@ -240,6 +242,9 @@ func gameplay_main():
 		
 	var current_floor_data =  await current_floor.setup(floor_count)
 	
+	if floor_count == 14:
+		current_floor.get_node("BossArena").connect("boss_defeated", _on_victory)
+	
 	$Player.position = current_floor_data["player_start_pos"]
 	$Player/Camera2D.position = Vector2i(0,0)
 	$Player/Camera2D.reset_smoothing()
@@ -297,8 +302,17 @@ func _ready():
 		$HUDLayer/HUD/FloorCounter.text = "Floor " + str(floor_count)
 		
 func _on_game_over() -> void:
-	$GameOverScreen.visible = true
+	$FinishScreen.visible = true
+	$FinishScreen/Panel/VBoxContainer/BigAssLabel.text = "Game Over"
+	$FinishScreen/Panel/VBoxContainer/Label.text = "Another side project abandoned"
 	$Player.visible = false
+	floor_active = false
+	
+func _on_victory() -> void:
+	$FinishScreen.visible = true
+	$FinishScreen/Panel/VBoxContainer/BigAssLabel.text = "Complete"
+	$FinishScreen/Panel/VBoxContainer/Label.text = "We're out of beta, we're releasing on time"
+	# Player doesn't die
 	floor_active = false
 		
 func _on_restart():

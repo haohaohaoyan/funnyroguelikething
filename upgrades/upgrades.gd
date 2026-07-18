@@ -68,7 +68,7 @@ var upgrade_info = {
 	
 	"max_health_add_1": {
 		"title": "Caffeine",
-		"description": "+10 max HP",
+		"description": "+20 max HP",
 		"stat_changes": {
 			"max_health": 20
 		},
@@ -77,7 +77,7 @@ var upgrade_info = {
 	
 	"max_health_add_2": {
 		"title": "Instant noodle pack",
-		"description": "+20 max HP",
+		"description": "+30 max HP",
 		"stat_changes": {
 			"max_health": 30
 		},
@@ -104,7 +104,7 @@ var upgrade_info = {
 	
 	"autoheal_2": {
 		"title": "Alarm clock setback", 
-		"description": "+5 HP healed per floor but attack cooldown is longer",
+		"description": "+9 HP healed per floor but attack cooldown is longer",
 		"stat_changes": {
 			"autoheal": 5,
 			"attack_cooldown": 0.3
@@ -126,5 +126,15 @@ var upgrade_info = {
 		"stat_changes": {
 			"counter_length": 0.5
 		}
+	},
+	
+	"counter_heal": {
+		"title": "Take a break",
+		"description": "Heal 1 HP after countering instead of damage boost",
+		"stat_changes": {
+			"counter_damage": 0,
+			"counter_heal": 1
+		},
+		"prerequisites": ["counter_damage_1"]
 	}
 }

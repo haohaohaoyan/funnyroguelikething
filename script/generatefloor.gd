@@ -33,10 +33,11 @@ func setup(current_floor_count):
 		floor_grow = 4
 		spawn_difficulty = "hard"
 	else: # floor 14 is boss
-		floor_grow = 2
-		spawn_difficulty = "boss"
+		return setup_boss()
 	
-	var player_start = to_global(layout_tiles.map_to_local(grow_map(floor_grow, 0.5)[-1]))
+	var player_start = to_global(layout_tiles.map_to_local(grow_map(floor_grow, 0.5)[-1])) / 2
+	
+	grow_map(1, 0.5) # Hopefully prevents player spawning outside of map
 	
 	$NextFloorStairway.position = to_global(layout_tiles.map_to_local(grow_map(1,0.3)[-1])) * Vector2(2,2)
 	
@@ -54,10 +55,11 @@ func setup(current_floor_count):
 	
 	# Add enemies by type based on the spawn difficulty
 	var spawn_dict = EnemyPatterns.enemy_spawning_patterns[spawn_difficulty].pick_random()
-	print(spawn_dict)
-	for enemy_type in spawn_dict:
-		spawn_enemies(enemy_type, spawn_dict[enemy_type], global_room_positions, 128, 3)
+	# for enemy_type in spawn_dict:
+		# spawn_enemies(enemy_type, spawn_dict[enemy_type], global_room_positions, 128, 3)
 		# TODO need to randomize this
+		
+	spawn_enemies("small", 8, global_room_positions, 128, 3)
 	
 	var output = {
 		"player_start_pos": player_start
@@ -165,5 +167,18 @@ func spawn_enemies(type: String, count: int, room_centers: Array, spawn_area_rad
 		else:
 			break
 		
+func setup_boss():
+	# Clear everything
+	for child in get_children():
+		child.queue_free()
 		
+	# Load boss scene instead
+	var boss_scene = load("res://scene/boss_arena.tscn")
+	add_child(boss_scene.instantiate())
 		
+	return {
+		"player_start_pos": Vector2(0,0)
+	}
+	
+	
+	

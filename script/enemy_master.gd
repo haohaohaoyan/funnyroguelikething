@@ -25,7 +25,6 @@ var enemy_info : Dictionary
 func spawn_typed_enemy(spawn_position):
 	# Instantiate enemy, add it, place it
 	var new_enemy = enemy_scene_base.instantiate()
-	add_child(new_enemy)
 	new_enemy.global_position = spawn_position
 	
 	# Set things according to enemy type
@@ -41,6 +40,11 @@ func spawn_typed_enemy(spawn_position):
 	new_enemy.set_meta("attack_state", "idle")
 	new_enemy.set_meta("movement_velocity", Vector2(0,0))
 	new_enemy.set_meta("knockback_velocity", Vector2(0,0))
+	
+	# random animation direction
+	new_enemy.get_node("AnimatedSprite2D").flip_h = [true, false].pick_random()
+	
+	add_child(new_enemy)
 	
 	new_enemy.get_node("AttackArea").connect("area_entered", func (_blank) :
 		EnemyPatterns.call("on_attack_connect_" + enemy_info["attack_type"], new_enemy, enemy_info)
@@ -63,7 +67,7 @@ func _physics_process(_delta: float) -> void:
 						Game.emit_floating_text(enemy, "!", Vector2.UP, 0, Color.RED, 32)
 						enemy.set_meta("state", "chase")
 			"chase":
-				enemy.look_at(Game.player_position)
+				enemy.get_node("AttackArea").look_at(Game.player_position)
 				
 				# If not close enough to player to attack, start getting close to attack, duh!
 				enemy.set_meta("movement_velocity", (Game.player_position - enemy.global_position).normalized() * enemy_info["speed"])
@@ -74,8 +78,8 @@ func _physics_process(_delta: float) -> void:
 					enemy.set_meta("movement_velocity", Vector2(0,0))
 					enemy.set_meta("state", "attack")
 			"attack":
-					# Pass control over to the enemy attack handler
-					EnemyPatterns.call("attack_" + type, enemy)
+				# Pass control over to the enemy attack handler
+				EnemyPatterns.call("attack_" + type, enemy)
 					
 		# Handles damage and health
 		if enemy.get_node("DamageArea").has_overlapping_bodies() or enemy.get_node("DamageArea").has_overlapping_areas():
@@ -91,3 +95,15 @@ func _physics_process(_delta: float) -> void:
 			enemy.get_meta("knockback_velocity").move_toward(Vector2(0,0), 15)) # Delta is friction value
 		
 		enemy.move_and_slide()
+		
+		# Handle enemy animations
+		# Separate from movement...
+		var animation_node = enemy.get_node("AnimatedSprite2D")
+		animation_node.flip_h = Game.player_position.x - enemy.global_position.x < 0
+		match enemy.get_meta("state"): 
+			"idle":
+				animation_node.play("default")
+			"chase": 
+				animation_node.play("idle")
+			"attack":
+				animation_node.play(enemy.get_meta("attack_state"))

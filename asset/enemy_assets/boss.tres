@@ -1,0 +1,14 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://chkrqlwebumlb"]
+
+[ext_resource type="Texture2D" uid="uid://bi2xg1oinw1tk" path="res://asset/enemy_assets/boss.png" id="1_w1463"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_w1463")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]

@@ -56,6 +56,8 @@ func _physics_process(_delta: float) -> void:
 				# Empty list of hit enemies 
 				Game.player_current_attack["enemies_hit"] = []
 				
+				# Play attack animation
+				$AttackCollision/AnimatedSprite2D.play("default")
 				
 			# Dash on right click
 			elif $DashCooldown.is_stopped() and event.button_mask == 2: # a bit long ik but this makes logic look better
@@ -66,6 +68,7 @@ func _physics_process(_delta: float) -> void:
 				
 				# Disable collision with enemies to dash through them
 				set_collision_mask_value(2, false)
+				set_collision_layer_value(1, true)
 				
 				# Mechanic I think is pretty cool! To detect cool dodges for flurry rushes and the
 				# like, leave behind an invisible hitbox that lasts for a fraction of a second and
@@ -114,23 +117,31 @@ func _ready():
 	$DodgeWindow.connect("timeout", func () : 
 		$DodgeDetect.monitoring = false
 		set_collision_mask_value(2, true)
+		set_collision_layer_value(1, true)
 		$DodgeDetect.global_position = global_position) # debug for when collisions are visible
 	# Connect dodge window to counter/flurry rush
-	$DodgeDetect.connect("area_entered", func (_blank) :
+	$DodgeDetect.connect("area_entered", func (area) :
+		if area == $DamageCollision:
+			return
 		# avoid multiple triggers
 		$DodgeDetect.set_deferred("monitoring", false)
-		if is_instance_valid(Game.current_counter_tween):
+		
+		# Counter heal activation
+		Game.player_health += Game.player_stats["counter_heal"]
+		if Game.current_counter_tween:
 			Game.current_counter_tween.kill()
-			# Game.player_stats["attack_power"] -= Game.player_stats["counter_damage"]
+			Game.player_stats["attack_bonus"] = max(0, Game.player_stats["attack_bonus"]  - Game.player_stats["counter_damage"])
 			
+		Game.player_stats["attack_bonus"] += Game.player_stats["counter_damage"]
+			
+		print(Game.player_stats["attack_bonus"])
 		# Emit announcement
 		Game.emit_floating_text(self, "COUNTER", Vector2.DOWN, 0, Color.YELLOW, 32)
 		
 		Game.current_counter_tween = Game.create_tween()
-		Game.player_stats["attack_power"] += Game.player_stats["counter_damage"]
 		Game.current_counter_tween.tween_interval(Game.player_stats["counter_length"])
 		Game.current_counter_tween.tween_callback(func () :
-			Game.player_stats["attack_power"] -= Game.player_stats["counter_damage"])
+			Game.player_stats["attack_bonus"] = max(0, Game.player_stats["attack_bonus"]  - Game.player_stats["counter_damage"]))
 		)
 		
 	
