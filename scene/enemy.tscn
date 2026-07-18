@@ -18,7 +18,7 @@ collision_mask = 3
 shape = SubResource("CircleShape2D_f87vc")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=788133832]
-scale = Vector2(2, 2)
+scale = Vector2(3, 3)
 sprite_frames = ExtResource("1_h08p8")
 
 [node name="SightArea" type="Area2D" parent="." unique_id=98291380]

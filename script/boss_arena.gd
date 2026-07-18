@@ -123,7 +123,7 @@ func _physics_process(_delta: float) -> void:
 				var distance_base = 400 if boss_current_info["hp"] <= base_boss_info["hp_threshold"] else 300
 				for i in range(attack_count):
 					# Flag that makes script kill itself if everything's over
-					if !$Enemy: return
+					if !get_node_or_null("Enemy"): return
 					
 					var distance = distance_base + ((Game.player_position - $Enemy.global_position).length())
 					boss_current_info["movement_velocity"] = (Game.player_position - $Enemy.global_position).normalized() * distance

@@ -130,10 +130,10 @@ var upgrade_info = {
 	
 	"counter_heal": {
 		"title": "Take a break",
-		"description": "Heal 1 HP after countering instead of damage boost",
+		"description": "Heal 3 HP after countering instead of damage boost",
 		"stat_changes": {
 			"counter_damage": 0,
-			"counter_heal": 1
+			"counter_heal": 3
 		},
 		"prerequisites": ["counter_damage_1"]
 	}

@@ -64,7 +64,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"default",
-"speed": 24.0
+"speed": 28.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_s4jxa"]
@@ -72,7 +72,6 @@ size = Vector2(100, 100)
 
 [node name="Player" type="CharacterBody2D" unique_id=481503623]
 z_index = 1
-collision_mask = 3
 script = ExtResource("1_hjaqi")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2060646201]
@@ -115,9 +114,10 @@ shape = SubResource("RectangleShape2D_fvtld")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="AttackCollision" unique_id=1665307575]
 position = Vector2(72, 0)
 rotation = 1.5707964
-scale = Vector2(2, 2)
+scale = Vector2(3, 3)
 sprite_frames = SubResource("SpriteFrames_5c0fr")
 frame = 4
+frame_progress = 1.0
 
 [node name="DashCooldown" type="Timer" parent="." unique_id=1240175133]
 wait_time = 0.8

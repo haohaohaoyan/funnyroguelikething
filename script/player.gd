@@ -68,7 +68,7 @@ func _physics_process(_delta: float) -> void:
 				
 				# Disable collision with enemies to dash through them
 				set_collision_mask_value(2, false)
-				set_collision_layer_value(1, true)
+				set_collision_layer_value(1, false)
 				
 				# Mechanic I think is pretty cool! To detect cool dodges for flurry rushes and the
 				# like, leave behind an invisible hitbox that lasts for a fraction of a second and
@@ -118,7 +118,7 @@ func _ready():
 		$DodgeDetect.monitoring = false
 		set_collision_mask_value(2, true)
 		set_collision_layer_value(1, true)
-		$DodgeDetect.global_position = global_position) # debug for when collisions are visible
+		$DodgeDetect.global_position = global_position) # debug for when collisions are visibles
 	# Connect dodge window to counter/flurry rush
 	$DodgeDetect.connect("area_entered", func (area) :
 		if area == $DamageCollision:

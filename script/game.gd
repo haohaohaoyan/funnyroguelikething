@@ -48,7 +48,7 @@ var player_current_attack := {
 
 # Extra player stats that can be changed by upgrades and weapons
 var player_stats := {
-	"attack_power": 18, # Base damage points per attack
+	"attack_power": 12, # Base damage points per attack
 	"attack_bonus": 0, # Calculated and added to attack on hit
 	"attack_cooldown": 0.15, # Time between attacks
 	"attack_range": 200, # Attack distance, plus/minus 100
@@ -58,7 +58,7 @@ var player_stats := {
 	"critical_bonus": 3, # Number to multiply by on critical
 	"autoheal": 0, # Value to heal by at end of each floor
 	"critical_rush": 0, # int boolean, if raised grants 1 second of increased base damage after crit
-	"counter_damage": 3, # int, damage boost on split second dodge
+	"counter_damage": 5, # int, damage boost on split second dodge
 	"counter_length": 0.5, # int, seconds for which counter damage boost lasts
 	"counter_heal": 0, # int, amount to heal by when triggering counter
 }
