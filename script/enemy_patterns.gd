@@ -231,13 +231,13 @@ var enemy_info_large := {
 func attack_large(enemy: Node):
 	# Same damn attack as normal but I'm too lazy to make them point to the same thing
 	if enemy.get_meta("attack_state") == "idle":
-		enemy.set_meta("attack_state", "attacking")
+		enemy.set_meta("attack_state", "windup")
 		var attack_process = enemy.create_tween()
 		attack_process.tween_property(enemy, "modulate", Color(2,2,2,1), enemy_info_large["attack_windup"])
 		await attack_process.finished
 		enemy.modulate = Color(1,1,1,1)
 		enemy.get_node("AttackArea").monitoring = true
-		enemy.set_meta("attack_state", "attack-cooldown")
+		enemy.set_meta("attack_state", "attack")
 		# add some movement
 		var dash_direction = (enemy.global_position - Game.player_position).normalized()
 		var dash_momentum = dash_direction * -100 # ????? same bullshit as in small enemy ????

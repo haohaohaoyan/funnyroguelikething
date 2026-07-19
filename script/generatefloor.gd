@@ -59,7 +59,8 @@ func setup(current_floor_count):
 		# spawn_enemies(enemy_type, spawn_dict[enemy_type], global_room_positions, 128, 3)
 		# TODO need to randomize this
 		
-	spawn_enemies("small", 8, global_room_positions, 128, 3)
+	spawn_enemies("small", 5, global_room_positions, 128, 3)
+	spawn_enemies("large", 3, global_room_positions, 128, 3)
 	
 	var output = {
 		"player_start_pos": player_start

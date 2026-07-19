@@ -42,7 +42,8 @@ func spawn_typed_enemy(spawn_position):
 	new_enemy.set_meta("knockback_velocity", Vector2(0,0))
 	
 	# random animation direction
-	new_enemy.get_node("AnimatedSprite2D").flip_h = [true, false].pick_random()
+	if type == "small":
+		new_enemy.get_node("AnimatedSprite2D").flip_h = [true, false].pick_random()
 	
 	add_child(new_enemy)
 	
@@ -99,11 +100,12 @@ func _physics_process(_delta: float) -> void:
 		# Handle enemy animations
 		# Separate from movement...
 		var animation_node = enemy.get_node("AnimatedSprite2D")
-		animation_node.flip_h = Game.player_position.x - enemy.global_position.x < 0
+		if type == "small":
+			animation_node.flip_h = Game.player_position.x - enemy.global_position.x < 0
 		match enemy.get_meta("state"): 
 			"idle":
-				animation_node.play("default")
-			"chase": 
 				animation_node.play("idle")
+			"chase": 
+				animation_node.play("chase")
 			"attack":
 				animation_node.play(enemy.get_meta("attack_state"))

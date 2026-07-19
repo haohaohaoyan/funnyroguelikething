@@ -101,6 +101,18 @@ func _physics_process(_delta: float) -> void:
 	Game.player_position = global_position
 	Game.player_state = state
 	
+	# Handle animations
+	# Point weapon at cursor
+	$Weapon.look_at(get_global_mouse_position())
+	
+	$AnimatedSprite2D.flip_h = velocity.x < 0
+	if !$DashCooldown.is_stopped():
+		$AnimatedSprite2D.play("dash")
+	elif velocity.length() > 0:
+		$AnimatedSprite2D.play("move")
+	else:
+		$AnimatedSprite2D.play("default")
+	
 func _input(event):
 	# Catches all mouse events but defers them to physics process
 	if event is InputEventMouseButton:

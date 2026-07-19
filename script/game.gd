@@ -249,6 +249,9 @@ func gameplay_main():
 	$Player/Camera2D.position = Vector2i(0,0)
 	$Player/Camera2D.reset_smoothing()
 	
+	# reset anim
+	$Player/AnimatedSprite2D.play("default")
+	
 	# wipe floating text pool
 	for text in $FloatingText.get_children():
 		$FloatingText.remove_child(text)
@@ -269,8 +272,9 @@ func gameplay_main():
 		
 	await current_floor.next_floor
 	
-	# Do autoheal
+	# Do autoheal, pause player anim
 	player_health += player_stats["autoheal"]
+	$Player/AnimatedSprite2D.play("default")
 	
 	# Stop floor activity
 	floor_active = false
@@ -284,7 +288,6 @@ func gameplay_main():
 	
 	# clean up
 	current_floor.queue_free()
-
 var floor_count = 1
 
 func _ready():

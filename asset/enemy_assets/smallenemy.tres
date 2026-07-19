@@ -6,10 +6,6 @@
 atlas = ExtResource("1_7ypqe")
 region = Rect2(16, 16, 16, 16)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_q2aa2"]
-atlas = ExtResource("1_7ypqe")
-region = Rect2(0, 0, 16, 16)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_7ypqe"]
 atlas = ExtResource("1_7ypqe")
 region = Rect2(0, 0, 16, 16)
@@ -17,6 +13,10 @@ region = Rect2(0, 0, 16, 16)
 [sub_resource type="AtlasTexture" id="AtlasTexture_yosmj"]
 atlas = ExtResource("1_7ypqe")
 region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q2aa2"]
+atlas = ExtResource("1_7ypqe")
+region = Rect2(0, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_e524c"]
 atlas = ExtResource("1_7ypqe")
@@ -34,18 +34,18 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_q2aa2")
-}],
-"loop": 1,
-"name": &"default",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
 "texture": SubResource("AtlasTexture_7ypqe")
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_yosmj")
+}],
+"loop": 1,
+"name": &"chase",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q2aa2")
 }],
 "loop": 1,
 "name": &"idle",
