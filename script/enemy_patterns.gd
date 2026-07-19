@@ -122,7 +122,7 @@ func attack_medium(enemy : Node):
 	# Check if it CAN attack, then attacks and sets cooldown
 	if enemy.get_meta("attack_state") == "idle":
 		# Tell everything that it's attacking
-		enemy.set_meta("attack_state", "attacking")
+		enemy.set_meta("attack_state", "windup")
 		# Tweens are assigned to enemy so that they are cleaned up when it dies
 		var attack_process = enemy.create_tween()
 		# enemy brightens while winding up
@@ -131,7 +131,7 @@ func attack_medium(enemy : Node):
 		enemy.modulate = Color(1,1,1,1)
 		enemy.get_node("AttackArea").monitoring = true
 		enemy.get_node("AttackArea").monitorable = true
-		enemy.set_meta("attack_state", "attack-cooldown")
+		enemy.set_meta("attack_state", "attack")
 		
 		# Hits once with a slightly randomized attack value and deactivates to only hit once
 		# Handled in default attack

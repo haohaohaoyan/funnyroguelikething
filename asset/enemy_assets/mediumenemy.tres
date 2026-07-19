@@ -2,13 +2,74 @@
 
 [ext_resource type="Texture2D" uid="uid://dcb8tjw1utl6c" path="res://asset/enemy_assets/mediumenemy.png" id="1_pscgg"]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_pscgg"]
+atlas = ExtResource("1_pscgg")
+region = Rect2(0, 72, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lx6l7"]
+atlas = ExtResource("1_pscgg")
+region = Rect2(24, 72, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0l7kw"]
+atlas = ExtResource("1_pscgg")
+region = Rect2(0, 24, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q6ph6"]
+atlas = ExtResource("1_pscgg")
+region = Rect2(24, 24, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mfa2y"]
+atlas = ExtResource("1_pscgg")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bikb8"]
+atlas = ExtResource("1_pscgg")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fos6h"]
+atlas = ExtResource("1_pscgg")
+region = Rect2(0, 48, 24, 24)
+
 [resource]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_pscgg")
+"texture": SubResource("AtlasTexture_pscgg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lx6l7")
 }],
 "loop": 1,
-"name": &"default",
+"name": &"attack",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0l7kw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q6ph6")
+}],
+"loop": 1,
+"name": &"chase",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mfa2y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bikb8")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fos6h")
+}],
+"loop": 1,
+"name": &"windup",
 "speed": 5.0
 }]

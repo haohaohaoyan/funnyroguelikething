@@ -55,12 +55,9 @@ func setup(current_floor_count):
 	
 	# Add enemies by type based on the spawn difficulty
 	var spawn_dict = EnemyPatterns.enemy_spawning_patterns[spawn_difficulty].pick_random()
-	# for enemy_type in spawn_dict:
-		# spawn_enemies(enemy_type, spawn_dict[enemy_type], global_room_positions, 128, 3)
+	for enemy_type in spawn_dict:
+		spawn_enemies(enemy_type, spawn_dict[enemy_type], global_room_positions, 128, 3)
 		# TODO need to randomize this
-		
-	spawn_enemies("small", 5, global_room_positions, 128, 3)
-	spawn_enemies("large", 3, global_room_positions, 128, 3)
 	
 	var output = {
 		"player_start_pos": player_start

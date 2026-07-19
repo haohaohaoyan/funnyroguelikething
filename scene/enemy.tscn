@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://c06vfjimnuwhe"]
 
-[ext_resource type="SpriteFrames" uid="uid://cpf46e6v6m8eg" path="res://asset/enemy_assets/largeenemy.tres" id="1_h08p8"]
+[ext_resource type="SpriteFrames" uid="uid://cel5n1hmr34vs" path="res://asset/enemy_assets/mediumenemy.tres" id="1_h08p8"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_f87vc"]
 
@@ -21,7 +21,7 @@ shape = SubResource("CircleShape2D_f87vc")
 scale = Vector2(3, 3)
 sprite_frames = ExtResource("1_h08p8")
 animation = &"idle"
-frame_progress = 0.48084936
+frame_progress = 0.689028
 
 [node name="SightArea" type="Area2D" parent="." unique_id=98291380]
 collision_layer = 0
