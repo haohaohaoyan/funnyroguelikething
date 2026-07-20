@@ -35,7 +35,7 @@ shape = SubResource("CircleShape2D_5c0fr")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=800016198]
 position = Vector2(-1.9073486e-06, 0)
 sprite_frames = ExtResource("1_dfd7w")
-frame_progress = 0.53828585
+frame_progress = 0.35969606
 
 [node name="DamageArea" type="Area2D" parent="." unique_id=1419455865]
 collision_layer = 8

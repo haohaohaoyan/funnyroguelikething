@@ -21,7 +21,7 @@ shape = SubResource("CircleShape2D_f87vc")
 scale = Vector2(3, 3)
 sprite_frames = ExtResource("1_h08p8")
 animation = &"background"
-frame_progress = 0.73625726
+frame_progress = 0.5902071
 
 [node name="SightArea" type="Area2D" parent="." unique_id=98291380]
 collision_layer = 0

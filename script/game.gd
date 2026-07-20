@@ -50,7 +50,7 @@ var player_current_attack := {
 var player_stats := {
 	"attack_power": 12, # Base damage points per attack
 	"attack_cooldown": 0.15, # Time between attacks
-	"attack_range": 200, # Attack distance, plus/minus 100
+	"attack_range": 160, # Attack distance, plus/minus 100
 	"dash_cooldown": 0.8, # Dash wait cooldown
 	"dash_range": 400, # Dash distance, plus/minus 20
 	"critical_chance": 0.05, # Chance out of 1 that an attack is critical
@@ -232,7 +232,8 @@ func emit_floating_text(origin: Node2D, value : String,
 var floor_active : bool = false
 
 var current_game_stats := {
-	"floor_count": 14,
+	"game_start_time": 0,
+	"floor_count": 1,
 	"enemies_spawned": 0,
 	"enemies_killed_total": 0,
 	"total_damage": 0,
@@ -313,6 +314,9 @@ func _ready():
 	EnemyPatterns.Game = self
 	Upgrades.Game = self
 	
+	# Set time
+	current_game_stats["game_start_time"] = Time.get_unix_time_from_system()
+	
 	while true:
 		await gameplay_main()
 		current_game_stats["floor_count"] += 1
@@ -322,8 +326,9 @@ func _on_game_over() -> void:
 	$GameOverScreen.visible = true
 	$GameOverScreen/Panel/VBoxContainer/Label.text = [
 		"Another side project abandoned.",
-		"Were you sure you could even follow through on that one?",
-		"At least you made an effort."
+		"Try dodging...out of the attacks?",
+		"You're invincible while dashing, you know.",
+		"If you don't want to do some tasks, you can just skip them if you want"
 	].pick_random()
 	$Player.visible = false
 	floor_active = false
@@ -331,21 +336,23 @@ func _on_game_over() -> void:
 func _on_victory() -> void:
 	$VictoryScreen.visible = true
 	# Populate data
+	var time_in_seconds = snappedf((Time.get_unix_time_from_system() - current_game_stats["game_start_time"]), 0.001)
+	var time_converted = str(floor(int(time_in_seconds / 60))) + "m" + str(fmod(time_in_seconds, 60)) + "s"
 	$VictoryScreen/Panel/MarginContainer/VBoxContainer/Label.text = "
-	Time: 0 \n
-	\n
-	Total Problems Solved: " + str(current_game_stats["enemies_killed_total"]) + " \n
-	Bugs Fixed: " + str(current_game_stats["small_killed"]) + " \n
-	Tasks Completed: " + str(current_game_stats["medium_killed"]) + " \n
-	Errors Resolved: " + str(current_game_stats["large_killed"]) + " \n
-	Deadlines Met: 1 \n
-	% of Problems Solved: " + str(current_game_stats["enemies_killed_total"]/current_game_stats["enemies_spawned"]) + "\n
-	\n
-	Total Damage: " + str(current_game_stats["total_damage"]) + " \n
-	Critical Hits Inflicted: " + str(current_game_stats["crits_dealt"]) + " \n
-	Counterattacks Triggered: " + str(current_game_stats["counters_triggered"]) + " \n
-	Upgrades Taken: " + str(len(current_upgrades)) + " \n
-	\n
+	Time: " + time_converted + " 
+	
+	Total Problems Solved: " + str(current_game_stats["enemies_killed_total"]) + " 
+	Bugs Fixed: " + str(current_game_stats["small_killed"]) + " 
+	Tasks Completed: " + str(current_game_stats["medium_killed"]) + " 
+	Errors Resolved: " + str(current_game_stats["large_killed"]) + " 
+	Deadlines Met: 1 
+	% of Problems Solved: " + str(current_game_stats["enemies_killed_total"]/current_game_stats["enemies_spawned"]) + "
+	
+	Total Damage: " + str(float(current_game_stats["total_damage"])) + " 
+	Critical Hits Inflicted: " + str(current_game_stats["crits_dealt"]) + " 
+	Counterattacks Triggered: " + str(current_game_stats["counters_triggered"]) + " 
+	Upgrades Taken: " + str(len(current_upgrades)) + " 
+	
 	" + ["We're out of beta, we're releasing on time", 
 	"Well done, you.", 
 	"Time to publish, preferably for free", 

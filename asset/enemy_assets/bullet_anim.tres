@@ -1,14 +1,14 @@
 [gd_resource type="SpriteFrames" format=3 uid="uid://nqn1asvj7i8e"]
 
-[ext_resource type="Texture2D" uid="uid://1d5rcnhymiyp" path="res://asset/enemy_assets/bullet.png" id="1_c5g6a"]
+[ext_resource type="Texture2D" uid="uid://bi2xg1oinw1tk" path="res://asset/enemy_assets/boss.png" id="1_c5g6a"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tbwox"]
 atlas = ExtResource("1_c5g6a")
-region = Rect2(0, 0, 16, 16)
+region = Rect2(192, 64, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_immcd"]
 atlas = ExtResource("1_c5g6a")
-region = Rect2(16, 0, 16, 16)
+region = Rect2(208, 64, 16, 16)
 
 [resource]
 animations = [{
@@ -21,5 +21,5 @@ animations = [{
 }],
 "loop": 1,
 "name": &"default",
-"speed": 5.0
+"speed": 8.0
 }]

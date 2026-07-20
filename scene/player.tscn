@@ -62,7 +62,17 @@ size = Vector2(100, 100)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5c0fr"]
 atlas = ExtResource("4_ct4mp")
-region = Rect2(48, 0, 16, 0)
+region = Rect2(48, 0, 16, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qllh1"]
+atlas = ExtResource("4_ct4mp")
+region = Rect2(16, 24, 16, 24)
+
+[sub_resource type="Gradient" id="Gradient_qmfnj"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="Gradient" id="Gradient_n7smx"]
+colors = PackedColorArray(0.627451, 0.627451, 0.627451, 0.6392157, 1, 1, 1, 1)
 
 [node name="Player" type="CharacterBody2D" unique_id=481503623]
 z_index = 1
@@ -72,11 +82,12 @@ script = ExtResource("1_hjaqi")
 shape = SubResource("RectangleShape2D_ct4mp")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1199007385]
+z_index = 1
 position = Vector2(-3.8147e-06, -3.8147e-06)
 scale = Vector2(3, 3)
 sprite_frames = ExtResource("2_fvtld")
 animation = &"move"
-frame_progress = 0.84034854
+frame_progress = 0.74896604
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=689296265]
 position = Vector2(-3.8147e-06, -3.8147e-06)
@@ -143,3 +154,15 @@ position = Vector2(54, 0)
 rotation = 1.5707964
 scale = Vector2(3, 3)
 texture = SubResource("AtlasTexture_5c0fr")
+
+[node name="Trail" type="CPUParticles2D" parent="." unique_id=1088092657]
+visible = false
+texture = SubResource("AtlasTexture_qllh1")
+lifetime = 0.5
+emission_shape = 1
+emission_sphere_radius = 15.0
+gravity = Vector2(0, 0)
+scale_amount_min = 3.0
+scale_amount_max = 3.0
+color_ramp = SubResource("Gradient_qmfnj")
+color_initial_ramp = SubResource("Gradient_n7smx")

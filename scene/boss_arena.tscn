@@ -2,7 +2,143 @@
 
 [ext_resource type="TileSet" uid="uid://cbw8vbubegexa" path="res://asset/roomparts.tres" id="1_3fbkp"]
 [ext_resource type="Script" uid="uid://dcc6i5y1csyah" path="res://script/boss_arena.gd" id="1_16ogr"]
-[ext_resource type="PackedScene" uid="uid://c06vfjimnuwhe" path="res://scene/enemy.tscn" id="3_5wlfk"]
+[ext_resource type="SpriteFrames" uid="uid://chkrqlwebumlb" path="res://asset/enemy_assets/boss.tres" id="3_16ogr"]
+[ext_resource type="Texture2D" uid="uid://bi2xg1oinw1tk" path="res://asset/enemy_assets/boss.png" id="4_5wlfk"]
+[ext_resource type="Texture2D" uid="uid://c5ywwyfnhhaxj" path="res://asset/enemy_assets/boss_icon.png" id="5_303pd"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5wlfk"]
+radius = 40.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5c0fr"]
+size = Vector2(113.5, 156)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5wlfk"]
+atlas = ExtResource("4_5wlfk")
+region = Rect2(128, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_303pd"]
+atlas = ExtResource("4_5wlfk")
+region = Rect2(64, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yam3i"]
+atlas = ExtResource("4_5wlfk")
+region = Rect2(0, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_noawr"]
+atlas = ExtResource("4_5wlfk")
+region = Rect2(128, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dggvd"]
+atlas = ExtResource("4_5wlfk")
+region = Rect2(64, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_muml7"]
+atlas = ExtResource("4_5wlfk")
+region = Rect2(0, 128, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_5c0fr"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5wlfk")
+}],
+"loop": 1,
+"name": &"attack1cooldown",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_303pd")
+}],
+"loop": 1,
+"name": &"attack1hit",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yam3i")
+}],
+"loop": 1,
+"name": &"attack1windup",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_noawr")
+}],
+"loop": 1,
+"name": &"attack2cooldown",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dggvd")
+}],
+"loop": 1,
+"name": &"attack2hit",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_muml7")
+}],
+"loop": 1,
+"name": &"attack2windup",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_303pd"]
+radius = 40.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c8t25"]
+atlas = ExtResource("5_303pd")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yv8jw"]
+atlas = ExtResource("5_303pd")
+region = Rect2(128, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ntc5l"]
+atlas = ExtResource("5_303pd")
+region = Rect2(256, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ocbr0"]
+atlas = ExtResource("5_303pd")
+region = Rect2(384, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vgift"]
+atlas = ExtResource("5_303pd")
+region = Rect2(0, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_722om"]
+atlas = ExtResource("5_303pd")
+region = Rect2(128, 128, 128, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_qllh1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c8t25")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yv8jw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ntc5l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ocbr0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vgift")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_722om")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 8.0
+}]
 
 [node name="BossArena" type="Node2D" unique_id=1842182525]
 script = ExtResource("1_16ogr")
@@ -12,9 +148,53 @@ scale = Vector2(4, 4)
 tile_map_data = PackedByteArray("AAD+/wEAAAAAAAIAAAD+////AAAAAAEAAAD+/wAAAAAAAAEAAAD///7/AAABAAAAAAAAAP7/AAABAAAAAAD//wEAAAABAAIAAAAAAAEAAAABAAIAAAD/////AAABAAEAAAD//wAAAAABAAEAAAAAAAAAAAABAAEAAAAAAP//AAABAAEAAAABAP7/AAAEAAEAAAABAAEAAAAEAAAAAAABAAIAAAAAAAEAAAABAAMAAAAAAAEAAAABAAQAAAAAAAEAAAABAAUAAAAAAAIAAAABAP3/AAAAAAEAAAABAPz/AAAAAAEAAAABAPv/AAAAAAEAAAABAPr/AAAAAAAAAAACAPr/AAABAAAAAAADAPr/AAABAAAAAAAEAPr/AAABAAAAAAAFAPr/AAABAAAAAAAGAPr/AAABAAAAAAAHAPr/AAABAAAAAAAIAPr/AAABAAAAAAAJAPr/AAABAAAAAAAKAPr/AAABAAAAAAALAPr/AAABAAAAAAAMAPr/AAACAAAAAAAMAAUAAAACAAIAAAAMAPv/AAACAAEAAAAMAPz/AAACAAEAAAAMAP3/AAACAAEAAAAMAP7/AAACAAEAAAAMAP//AAACAAEAAAAMAAAAAAACAAEAAAAMAAEAAAACAAEAAAAMAAIAAAACAAEAAAAMAAMAAAACAAEAAAAMAAQAAAACAAEAAAACAAUAAAABAAIAAAADAAUAAAABAAIAAAAEAAUAAAABAAIAAAAFAAUAAAABAAIAAAAGAAUAAAABAAIAAAAHAAUAAAABAAIAAAAIAAUAAAABAAIAAAAJAAUAAAABAAIAAAAKAAUAAAABAAIAAAALAAUAAAABAAIAAAACAPv/AAABAAEAAAACAPz/AAABAAEAAAACAP3/AAABAAEAAAACAP7/AAABAAEAAAACAP//AAABAAEAAAACAAAAAAABAAEAAAACAAEAAAABAAEAAAACAAIAAAABAAEAAAACAAMAAAABAAEAAAACAAQAAAABAAEAAAADAAQAAAABAAEAAAAEAAQAAAABAAEAAAAFAAQAAAABAAEAAAAGAAQAAAABAAEAAAAHAAQAAAABAAEAAAAIAAQAAAABAAEAAAAIAAMAAAABAAEAAAAJAAMAAAABAAEAAAAKAAMAAAABAAEAAAAKAAQAAAABAAEAAAALAAQAAAABAAEAAAAJAAQAAAABAAEAAAALAAMAAAABAAEAAAALAAIAAAABAAEAAAALAAEAAAABAAEAAAALAAAAAAABAAEAAAALAP//AAABAAEAAAALAP7/AAABAAEAAAALAP3/AAABAAEAAAALAPz/AAABAAEAAAALAPv/AAABAAEAAAAKAPv/AAABAAEAAAAJAPv/AAABAAEAAAAIAPv/AAABAAEAAAAHAPv/AAABAAEAAAAGAPv/AAABAAEAAAAFAPv/AAABAAEAAAAEAPv/AAABAAEAAAADAPv/AAABAAEAAAADAPz/AAABAAEAAAADAP3/AAABAAEAAAADAP7/AAABAAEAAAADAP//AAABAAEAAAADAAAAAAABAAEAAAADAAEAAAABAAEAAAADAAIAAAABAAEAAAADAAMAAAABAAEAAAAEAAMAAAABAAEAAAAEAAIAAAABAAEAAAAFAAIAAAABAAEAAAAFAAEAAAABAAEAAAAFAAAAAAABAAEAAAAFAP//AAABAAEAAAAEAP//AAABAAEAAAAEAP7/AAABAAEAAAAEAP3/AAABAAEAAAAEAPz/AAABAAEAAAAEAAAAAAABAAEAAAAEAAEAAAABAAEAAAAFAAMAAAABAAEAAAAGAAMAAAABAAEAAAAGAAIAAAABAAEAAAAHAAIAAAABAAEAAAAHAAEAAAABAAEAAAAHAAAAAAABAAEAAAAHAP//AAABAAEAAAAGAP//AAABAAEAAAAGAP7/AAABAAEAAAAGAP3/AAABAAEAAAAGAPz/AAABAAEAAAAFAPz/AAABAAEAAAAFAP3/AAABAAEAAAAFAP7/AAABAAEAAAAGAAAAAAABAAEAAAAGAAEAAAABAAEAAAAHAAMAAAABAAEAAAAIAAIAAAABAAEAAAAIAAEAAAABAAEAAAAIAAAAAAABAAEAAAAIAP//AAABAAEAAAAIAP7/AAABAAEAAAAHAP7/AAABAAEAAAAHAP3/AAABAAEAAAAHAPz/AAABAAEAAAAIAP3/AAABAAEAAAAJAP//AAABAAEAAAAJAAAAAAABAAEAAAAJAAEAAAABAAEAAAAJAAIAAAABAAEAAAAJAP7/AAABAAEAAAAJAP3/AAABAAEAAAAJAPz/AAABAAEAAAAIAPz/AAABAAEAAAAKAPz/AAABAAEAAAAKAP3/AAABAAEAAAAKAP7/AAABAAEAAAAKAP//AAABAAEAAAAKAAAAAAABAAEAAAAKAAEAAAABAAEAAAAKAAIAAAABAAEAAAABAP//AAABAAEAAAABAAAAAAABAAEAAAD+//7/AAAAAAAAAAA=")
 tile_set = ExtResource("1_3fbkp")
 
-[node name="Enemy" parent="." unique_id=931085186 instance=ExtResource("3_5wlfk")]
-position = Vector2(712, -1)
-
 [node name="BossAttackTimer" type="Timer" parent="." unique_id=2045193223]
 wait_time = 1.7999999999999998
 one_shot = true
+
+[node name="Enemy" type="CharacterBody2D" parent="." unique_id=931085186]
+position = Vector2(1030, 0)
+collision_layer = 2
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy" unique_id=136589946]
+shape = SubResource("CircleShape2D_5wlfk")
+
+[node name="Background" type="AnimatedSprite2D" parent="Enemy" unique_id=788133832]
+z_index = 1
+scale = Vector2(3, 3)
+sprite_frames = ExtResource("3_16ogr")
+animation = &"background"
+autoplay = "background"
+frame_progress = 0.9048274
+
+[node name="AttackArea" type="Area2D" parent="Enemy" unique_id=71446596]
+collision_layer = 8
+collision_mask = 8
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy/AttackArea" unique_id=884598219]
+position = Vector2(88.25, 0)
+shape = SubResource("RectangleShape2D_5c0fr")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Enemy/AttackArea" unique_id=889064646]
+visible = false
+position = Vector2(69, 0)
+scale = Vector2(3, 3)
+sprite_frames = SubResource("SpriteFrames_5c0fr")
+animation = &"attack1cooldown"
+
+[node name="DamageArea" type="Area2D" parent="Enemy" unique_id=1037615836]
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy/DamageArea" unique_id=1425703863]
+shape = SubResource("CircleShape2D_303pd")
+
+[node name="What" type="AnimatedSprite2D" parent="Enemy" unique_id=823599702]
+z_index = 2
+sprite_frames = SubResource("SpriteFrames_qllh1")
+autoplay = "default"
+frame = 1
+frame_progress = 0.7106202

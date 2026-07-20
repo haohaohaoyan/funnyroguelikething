@@ -20,6 +20,9 @@ sources/0 = SubResource("TileSetAtlasSource_36wlx")
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dmi07"]
 size = Vector2(144, 144)
 
+[sub_resource type="LabelSettings" id="LabelSettings_5c0fr"]
+font_size = 32
+
 [node name="Floor" type="Node2D" unique_id=2143373616]
 script = ExtResource("1_36wlx")
 
@@ -42,6 +45,16 @@ script = ExtResource("4_7g0b6")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="NextFloorStairway" unique_id=1225381006]
 shape = SubResource("RectangleShape2D_dmi07")
+
+[node name="Label" type="Label" parent="NextFloorStairway/CollisionShape2D" unique_id=934797021]
+offset_left = -98.0
+offset_top = -120.0
+offset_right = 100.0
+offset_bottom = -27.0
+text = "SPACE
+"
+label_settings = SubResource("LabelSettings_5c0fr")
+horizontal_alignment = 1
 
 [node name="Sprite2D" type="Sprite2D" parent="NextFloorStairway" unique_id=1181040606]
 scale = Vector2(6, 6)

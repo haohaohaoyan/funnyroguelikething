@@ -78,6 +78,9 @@ func _physics_process(_delta: float) -> void:
 				$DodgeDetect.monitoring = true
 				$DodgeWindow.start()
 				
+				# Start particle trail
+				$Trail.emitting = true
+				
 			else: # If not valid, immediately tosses event and breaks from if/else. 
 				mouse_events.erase(event)
 				break
@@ -112,6 +115,9 @@ func _physics_process(_delta: float) -> void:
 		$AnimatedSprite2D.play("move")
 	else:
 		$AnimatedSprite2D.play("default")
+		
+	# Sync trail to animation
+	$Trail.texture.region.position = Vector2(32,24) if $AnimatedSprite2D.flip_h else Vector2(16,24)
 	
 func _input(event):
 	# Catches all mouse events but defers them to physics process
@@ -125,7 +131,10 @@ func _ready():
 		$AttackCollision.monitorable = false
 		$AttackCollision/CollisionShape2D.disabled = true
 		$AttackCollision.visible = false) # debug
-	$DashCooldown.connect("timeout", func () : state = "idle")
+	$DashCooldown.connect("timeout", func () : 
+		state = "idle"
+		$Trail.emitting = false
+		)
 	$DodgeWindow.connect("timeout", func () : 
 		$DodgeDetect.monitoring = false
 		set_collision_mask_value(2, true)
