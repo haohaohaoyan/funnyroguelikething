@@ -320,7 +320,7 @@ func _ready():
 	while true:
 		await gameplay_main()
 		current_game_stats["floor_count"] += 1
-		$HUDLayer/HUD/FloorCounter.text = str(15 - current_game_stats["floor_count"]) + " days until deadilne"
+		$HUDLayer/HUD/FloorCounter.text = str(15 - current_game_stats["floor_count"]) + " days until deadline"
 		
 func _on_game_over() -> void:
 	$GameOverScreen.visible = true

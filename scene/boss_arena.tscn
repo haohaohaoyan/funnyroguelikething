@@ -166,7 +166,7 @@ scale = Vector2(3, 3)
 sprite_frames = ExtResource("3_16ogr")
 animation = &"background"
 autoplay = "background"
-frame_progress = 0.9048274
+frame_progress = 0.20831999
 
 [node name="AttackArea" type="Area2D" parent="Enemy" unique_id=71446596]
 collision_layer = 8

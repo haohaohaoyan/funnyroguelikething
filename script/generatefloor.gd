@@ -37,13 +37,13 @@ func setup(current_floor_count):
 	
 	var player_start = to_global(layout_tiles.map_to_local(grow_map(floor_grow, 0.5)[-1])) / 2
 	
-	grow_map(1, 0.5) # Hopefully prevents player spawning outside of map
-	
 	$NextFloorStairway.position = to_global(layout_tiles.map_to_local(grow_map(1,0.3)[-1])) * Vector2(2,2)
 	
 	# make sure the next floor stairway isn't always THAT close
 	while $NextFloorStairway.position.distance_to(player_start) <= 200:
 		$NextFloorStairway.position = to_global(layout_tiles.map_to_local(grow_map(1,0.3)[-1]))
+		
+	grow_map(1, 0.5) # Prevent things from being out of map, hopefully.
 		
 	# Recompile map into for proper collision
 	convert_to_floor(square_room_size)
