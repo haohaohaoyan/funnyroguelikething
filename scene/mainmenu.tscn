@@ -1,16 +1,21 @@
 [gd_scene format=3 uid="uid://bnq5pstj7pap2"]
 
+[ext_resource type="FontFile" uid="uid://dmnrg6i5k357e" path="res://asset/cour.ttf" id="1_0khfh"]
+[ext_resource type="FontFile" uid="uid://1b0js21rukfg" path="res://asset/courbd.ttf" id="2_h8uk4"]
+
 [sub_resource type="GDScript" id="GDScript_rry36"]
 script/source = "extends Control
 
 func _ready():
-	$VBoxContainer/Button.connect(\"pressed\", func ():
+	$VBoxContainer/MarginContainer/VBoxContainer/Button.connect(\"pressed\", func ():
 		get_tree().change_scene_to_file(\"res://scene/game.tscn\")
 		)
 "
 
-[sub_resource type="LabelSettings" id="LabelSettings_5c0fr"]
-font_size = 42
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5c0fr"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_xwgnk"]
+font = ExtResource("1_0khfh")
 
 [node name="Menu" type="Control" unique_id=239744671]
 layout_mode = 3
@@ -29,27 +34,102 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=2075697013]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=150980060]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -305.0
-offset_top = -46.5
-offset_right = 305.0
-offset_bottom = 46.5
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Label" type="Label" parent="VBoxContainer" unique_id=1884712011]
+[node name="Bar" type="Panel" parent="VBoxContainer" unique_id=1505903111]
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
-text = "SOLO DEVELOPER SIMULATOR"
-label_settings = SubResource("LabelSettings_5c0fr")
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_5c0fr")
 
-[node name="Button" type="Button" parent="VBoxContainer" unique_id=1790581251]
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Bar" unique_id=1156637194]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Label" type="Label" parent="VBoxContainer/Bar/MarginContainer" unique_id=2098547640]
 layout_mode = 2
-size_flags_horizontal = 4
-text = "play button
-"
+text = "main.gd"
+label_settings = SubResource("LabelSettings_xwgnk")
+
+[node name="Label2" type="Label" parent="VBoxContainer/Bar/MarginContainer" unique_id=487414984]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "- ☐ X"
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer" unique_id=173663040]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer" unique_id=483383945]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/MarginContainer/VBoxContainer" unique_id=1596288234]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("1_0khfh")
+bbcode_enabled = true
+text = "[color=\"gray\"]1  # █████ █████ █     █████   ████  █████ █   █   ████  █   █ █   █ █████ █████ █████ █   █
+2  # █     █   █ █     █   █   █   █ █     █   █   █   █ █   █ ██  █ █     █     █   █ ██  █
+3  # █████ █   █ █     █   █   █   █ ███   █   █   █   █ █   █ █ █ █ █ ███ ███   █   █ █ █ █
+4  #     █ █   █ █     █   █   █   █ █      █ █    █   █ █   █ █  ██ █   █ █     █   █ █  ██
+5  # █████ █████ █████ █████   ████  █████   █     ████   ███  █   █ █████ █████ █████ █   █
+6 
+7  # [color=\"orange\"]TODO[/color] remove old fantasy text after review
+8  # [s]Hack and slash your way through 14 floors of medieval action![/s]
+9  # Bugfix and problem-solve your way through 14 days of intense hybrid lock-in and procrastination!
+10 # [s]Will you choose to face the monstrous foes head-on and unlock powerful upgrades?[/s]
+11 # Will you choose to eat that frog and mow down tasks & debug to give yourself powerful experience?
+12 # [s]Everything comes down to your showdown at the zenith![/s]
+13 # Everything --- [color=\"orange\"]TODO[/color] come up with something procrastination/cramming/deadline focused
+14
+15
+16 # WASD to move 
+17 # Left-click to move towards your cursor and attack: [s]slash your foes away[/s] get to work on those features!
+18 # Right-click to dash long distances through enemies. Dash has longer cooldown.
+19 # Dash away from an enemy just as it's about to hit you for a temporary damage boost!
+20 # Spacebar to climb up stairs to the next [s]tower floor[/s] day of work ([color=\"orange\"]TODO[/color] need to change art)
+21 # Gain enough XP to level up and choose between 3 upgrades!
+22 # If your [s]HP[/s] Motivation reaches 0, you [s]die[/s] abandon the project and have to restart!
+23 # Be careful! Enemies hit hard so you must choose wisely between gaining XP and saving your health!
+24
+25 # Are you ready to dive in?
+26 # Run the function below! [color=\"orange\"]TODO[/color] make proper starting screen, this is temporary. "
+fit_content = true
+
+[node name="Button" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer" unique_id=62889412]
+custom_minimum_size = Vector2(200, 0)
+custom_maximum_size = Vector2(200, -1)
+layout_mode = 2
+size_flags_horizontal = 0
+text = " "
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/MarginContainer/VBoxContainer/Button" unique_id=1732163536]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -9.5
+offset_right = 174.0
+offset_bottom = 9.5
+grow_vertical = 2
+mouse_filter = 1
+theme_override_fonts/normal_font = ExtResource("1_0khfh")
+theme_override_fonts/bold_font = ExtResource("2_h8uk4")
+bbcode_enabled = true
+text = "[color=\"gray\"]27[/color] [b][color=\"c7ffed\"]Game[/color][color=\"gray\"].[/color][color=\"57b3ff\"]start[/color][color=\"abc9ff\"]()[/color][/b]"

@@ -49,7 +49,6 @@ var player_current_attack := {
 # Extra player stats that can be changed by upgrades and weapons
 var player_stats := {
 	"attack_power": 12, # Base damage points per attack
-	"attack_bonus": 0, # Calculated and added to attack on hit
 	"attack_cooldown": 0.15, # Time between attacks
 	"attack_range": 200, # Attack distance, plus/minus 100
 	"dash_cooldown": 0.8, # Dash wait cooldown
@@ -59,13 +58,13 @@ var player_stats := {
 	"autoheal": 0, # Value to heal by at end of each floor
 	"critical_rush": 0, # int boolean, if raised grants 1 second of increased base damage after crit
 	"counter_damage": 5, # int, damage boost on split second dodge
-	"counter_length": 0.5, # int, seconds for which counter damage boost lasts
+	"counter_length": 1, # int, seconds for which counter damage boost lasts
 	"counter_heal": 0, # int, amount to heal by when triggering counter
 }
 
 # Other more specific things
-var current_rush_tween : Tween = null
-var current_counter_tween : Tween = null
+var current_rush_tween : Tween
+var current_counter_tween : Tween
 
 # Player level, current XP count, this level's necessary amount
 var player_level := {
@@ -84,7 +83,7 @@ func give_xp(xp):
 		# Update stats
 		player_level["current_xp"] = 0
 		player_level["level"] += 1
-		player_level["this_level_req"] = round(player_level["this_level_req"] * 1.5)
+		player_level["this_level_req"] = round(player_level["this_level_req"] * 1.2)
 		upgrade_select()
 		
 	# Update UI
@@ -232,6 +231,19 @@ func emit_floating_text(origin: Node2D, value : String,
 # Mostly to prevent loads of enemies immediately ganging up on you
 var floor_active : bool = false
 
+var current_game_stats := {
+	"floor_count": 14,
+	"enemies_spawned": 0,
+	"enemies_killed_total": 0,
+	"total_damage": 0,
+	"small_killed": 0,
+	"medium_killed": 0,
+	"large_killed": 0,
+	"damage_dealt": 0,
+	"crits_dealt": 0,
+	"counters_triggered": 0,
+}
+
 # FULLY handles a single floor
 func gameplay_main():
 	# ensure black screen
@@ -240,10 +252,13 @@ func gameplay_main():
 	var current_floor = floor_packed.instantiate()
 	add_child(current_floor)
 		
-	var current_floor_data =  await current_floor.setup(floor_count)
+	var current_floor_data =  await current_floor.setup(current_game_stats["floor_count"])
 	
-	if floor_count == 14:
+	if current_game_stats["floor_count"] == 14:
 		current_floor.get_node("BossArena").connect("boss_defeated", _on_victory)
+		
+	# add spawned enemies to enemy count
+	current_game_stats["enemies_spawned"] += current_floor_data["enemy_count"]
 	
 	$Player.position = current_floor_data["player_start_pos"]
 	$Player/Camera2D.position = Vector2i(0,0)
@@ -288,7 +303,6 @@ func gameplay_main():
 	
 	# clean up
 	current_floor.queue_free()
-var floor_count = 1
 
 func _ready():
 	# Set starting stats to trigger setters
@@ -301,20 +315,43 @@ func _ready():
 	
 	while true:
 		await gameplay_main()
-		floor_count += 1
-		$HUDLayer/HUD/FloorCounter.text = "Floor " + str(floor_count)
+		current_game_stats["floor_count"] += 1
+		$HUDLayer/HUD/FloorCounter.text = str(15 - current_game_stats["floor_count"]) + " days until deadilne"
 		
 func _on_game_over() -> void:
-	$FinishScreen.visible = true
-	$FinishScreen/Panel/VBoxContainer/BigAssLabel.text = "Game Over"
-	$FinishScreen/Panel/VBoxContainer/Label.text = "Another side project abandoned"
+	$GameOverScreen.visible = true
+	$GameOverScreen/Panel/VBoxContainer/Label.text = [
+		"Another side project abandoned.",
+		"Were you sure you could even follow through on that one?",
+		"At least you made an effort."
+	].pick_random()
 	$Player.visible = false
 	floor_active = false
 	
 func _on_victory() -> void:
-	$FinishScreen.visible = true
-	$FinishScreen/Panel/VBoxContainer/BigAssLabel.text = "Complete"
-	$FinishScreen/Panel/VBoxContainer/Label.text = "We're out of beta, we're releasing on time"
+	$VictoryScreen.visible = true
+	# Populate data
+	$VictoryScreen/Panel/MarginContainer/VBoxContainer/Label.text = "
+	Time: 0 \n
+	\n
+	Total Problems Solved: " + str(current_game_stats["enemies_killed_total"]) + " \n
+	Bugs Fixed: " + str(current_game_stats["small_killed"]) + " \n
+	Tasks Completed: " + str(current_game_stats["medium_killed"]) + " \n
+	Errors Resolved: " + str(current_game_stats["large_killed"]) + " \n
+	Deadlines Met: 1 \n
+	% of Problems Solved: " + str(current_game_stats["enemies_killed_total"]/current_game_stats["enemies_spawned"]) + "\n
+	\n
+	Total Damage: " + str(current_game_stats["total_damage"]) + " \n
+	Critical Hits Inflicted: " + str(current_game_stats["crits_dealt"]) + " \n
+	Counterattacks Triggered: " + str(current_game_stats["counters_triggered"]) + " \n
+	Upgrades Taken: " + str(len(current_upgrades)) + " \n
+	\n
+	" + ["We're out of beta, we're releasing on time", 
+	"Well done, you.", 
+	"Time to publish, preferably for free", 
+	"You think it's gonna do well on the market?",
+	"Can you believe you made the deadline?"
+	].pick_random()
 	# Player doesn't die
 	floor_active = false
 		

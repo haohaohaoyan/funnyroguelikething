@@ -142,18 +142,13 @@ func _ready():
 		Game.player_health += Game.player_stats["counter_heal"]
 		if Game.current_counter_tween:
 			Game.current_counter_tween.kill()
-			Game.player_stats["attack_bonus"] = max(0, Game.player_stats["attack_bonus"]  - Game.player_stats["counter_damage"])
 			
-		Game.player_stats["attack_bonus"] += Game.player_stats["counter_damage"]
-			
-		print(Game.player_stats["attack_bonus"])
 		# Emit announcement
 		Game.emit_floating_text(self, "COUNTER", Vector2.DOWN, 0, Color.YELLOW, 32)
+		# Add to counter trigger count
+		Game.current_game_stats["counters_triggered"] += 1
 		
 		Game.current_counter_tween = Game.create_tween()
 		Game.current_counter_tween.tween_interval(Game.player_stats["counter_length"])
-		Game.current_counter_tween.tween_callback(func () :
-			Game.player_stats["attack_bonus"] = max(0, Game.player_stats["attack_bonus"]  - Game.player_stats["counter_damage"]))
+		Game.current_counter_tween.tween_callback(func (): Game.current_counter_tween = null)
 		)
-		
-	

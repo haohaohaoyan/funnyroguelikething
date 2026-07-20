@@ -47,14 +47,17 @@ func on_attack_connect_default(enemy, enemy_type):
 	enemy.get_node("AttackArea").set_deferred("monitorable", false)
 	
 # Abstract enemy damage event
-func on_damage_take(enemy, enemy_type):
+func on_damage_take(enemy, enemy_type, enemy_name):
 	# Subtract from health
 	# If has not already been hit by this attack
 	if enemy not in Game.player_current_attack["enemies_hit"]:
 		# Attack damage formula: player attack base +- 15 percent, multiply by crit if critting
 		var crit_boost = 1 if randf() >= Game.player_stats["critical_chance"] else Game.player_stats["critical_bonus"]
-		var damage_amount = Game.player_stats["attack_power"] + Game.player_stats["attack_bonus"]
-		var damage_taken = (damage_amount + round((randf() - 0.5) * (damage_amount * 0.15))
+		var crit_rush = 6 if Game.current_rush_tween else 0
+		var counter_boost = Game.player_stats["counter_damage"] if Game.current_counter_tween else 0
+		var damage_taken = (Game.player_stats["attack_power"]
+			+ round((randf() - 0.5) * (Game.player_stats["attack_power"] * 0.15))
+			+ crit_rush + counter_boost
 			) * crit_boost
 		
 		# Add knockback
@@ -67,42 +70,44 @@ func on_damage_take(enemy, enemy_type):
 		if crit_boost > 1:
 			Game.call_deferred("emit_floating_text", enemy, "CRITICAL " + str(int(damage_taken)), 
 			Game.player_current_attack["direction"], 0.3, Color.GREEN, 32)
+			# Add to count
+			Game.current_game_stats["crits_dealt"] += 1
 			# Trigger critical boost
 			if Game.player_stats["critical_rush"] == 1:
 				Game.emit_floating_text(enemy, "CRITICAL RUSH", Vector2.DOWN, 0.3, Color.GREEN_YELLOW, 32)
 				# First kill old tween
 				if Game.current_rush_tween:
-					Game.player_stats["attack_bonus"] = max(0, Game.player_stats["attack_bonus"]  - 6)
 					Game.current_rush_tween.kill()
 				
-				Game.player_stats["attack_bonus"] += 6
 				Game.current_rush_tween = Game.create_tween()
 				Game.current_rush_tween.tween_interval(1)
-				Game.current_rush_tween.tween_callback(func () :
-					# Floored at 0 so it doesn't go negative
-					Game.player_stats["attack_bonus"] = max(0, Game.player_stats["attack_bonus"]  - 6)
-					)
+				Game.current_rush_tween.tween_callback(func (): Game.current_rush_tween = null)
 		else:
 			Game.call_deferred("emit_floating_text", enemy, str(int(damage_taken)), 
 		Game.player_current_attack["direction"], 0.7)
 		
 		enemy.set_meta("hp", enemy.get_meta("hp") - damage_taken)
+		# Add damage taken
+		Game.current_game_stats["total_damage"] += damage_taken
+		
 		# Placeholder death
 		if enemy.get_meta("hp") <= 0:
-			# Insert death animation
+			# Insert death animation (currently just poofs out of existence)
 			enemy.call_deferred("queue_free")
 			Game.give_xp(enemy_type["xp_value"])
+			# Add to enemy-specific death counter
+			Game.current_game_stats[enemy_name + "_killed"] += 1
 		
 		# Add to attack list so it isn't attacked again in the same hit
 		Game.player_current_attack["enemies_hit"].append(enemy)
 
 
 # Medium/basic enemy. John Enemy, if you will
-var enemy_info_medium := {
+const enemy_info_medium := {
 	"animation_resource": "res://asset/enemy_assets/mediumenemy.tres",
 	"collision_radius": 10,
-	"hp": 70, 
-	"speed": 80,
+	"hp": 60, 
+	"speed": 120,
 	"attack_distance": 80, 
 	"attack_collision_resource": "res://asset/enemy_assets/mediumenemyattack.tres",
 	"attack_collision_transform": Vector2(50,0),
@@ -126,7 +131,9 @@ func attack_medium(enemy : Node):
 		# Tweens are assigned to enemy so that they are cleaned up when it dies
 		var attack_process = enemy.create_tween()
 		# enemy brightens while winding up
-		attack_process.tween_property(enemy, "modulate", Color(2,2,2,1), enemy_info_medium["attack_windup"])
+		attack_process.tween_property(enemy, "modulate", Color(2,0,0,1), enemy_info_medium["attack_windup"] - 0.05)
+		# REALLY BRIGHT WHITE to signify dodge window
+		attack_process.tween_property(enemy, "modulate", Color(15,15,15,1), 0.05)
 		await attack_process.finished
 		enemy.modulate = Color(1,1,1,1)
 		enemy.get_node("AttackArea").monitoring = true
@@ -153,20 +160,20 @@ func attack_medium(enemy : Node):
 
 # Tiny little motherfucking bugs
 # Does the thing all tiny enemies do, hold in place and dash forward
-var enemy_info_small := {
+const enemy_info_small := {
 	"animation_resource": "res://asset/enemy_assets/smallenemy.tres",
 	"collision_radius": 10,
 	"hp": 30, 
-	"speed": 120,
-	"attack_distance": 100, 
+	"speed": 180,
+	"attack_distance": 160, 
 	"attack_collision_resource": "res://asset/enemy_assets/smallenemyattack.tres",
 	"attack_collision_transform": Vector2(0,0),
-	"attack_power": 2,
+	"attack_power": 3,
 	"attack_type": "default",
 	"attack_windup": 0.2,
 	"attack_time": 0.4,
 	"attack_cooldown": 0.8,
-	"notice_distance": 180,
+	"notice_distance": 300,
 	"knockback_weight": 500,
 	"xp_value": 1,
 }
@@ -175,12 +182,19 @@ func attack_small(enemy: Node):
 	# Pretty much just attack medium
 	# Dashes forward though
 	if enemy.get_meta("attack_state") == "idle":
+		# Revert to chase just in case
+		if (enemy.global_position - Game.player_position).length() >= enemy_info_small["attack_distance"]:
+			enemy.set_meta("state", "chase")
+			return
+		
 		# Tell everything that it's attacking
 		enemy.set_meta("attack_state", "windup")
 		# Tweens are assigned to enemy so that they are cleaned up when it dies
 		var attack_process = enemy.create_tween()
 		# enemy brightens while winding up
-		attack_process.tween_property(enemy, "modulate", Color(2,2,2,1), enemy_info_small["attack_windup"])
+		attack_process.tween_property(enemy, "modulate", Color(2,0,0,1), enemy_info_small["attack_windup"] - 0.05)
+		# REALLY BRIGHT WHITE to signify dodge window
+		attack_process.tween_property(enemy, "modulate", Color(15,15,15,1), 0.05)
 		await attack_process.finished
 		enemy.modulate = Color(1,1,1,1)
 		enemy.get_node("AttackArea").monitoring = true
@@ -190,7 +204,7 @@ func attack_small(enemy: Node):
 		
 		# set momentum
 		var dash_direction = (enemy.global_position - Game.player_position).normalized()
-		var dash_momentum = dash_direction * -500 # ????? why negative???
+		var dash_momentum = dash_direction * -800 # ????? why negative???
 		
 		enemy.set_meta("movement_velocity", enemy.get_meta("movement_velocity") + dash_momentum)
 		
@@ -206,24 +220,21 @@ func attack_small(enemy: Node):
 		attack_cooldown_tween.tween_interval(enemy_info_small["attack_cooldown"])
 		attack_cooldown_tween.tween_callback(func () : 
 			enemy.set_meta("attack_state", "idle"))
-			
-	if (enemy.global_position - Game.player_position).length() >= enemy_info_small["attack_distance"]:
-		enemy.set_meta("state", "chase")
 
-var enemy_info_large := {
+const enemy_info_large := {
 	"animation_resource": "res://asset/enemy_assets/largeenemy.tres",
 	"collision_radius": 30,
-	"hp": 100, 
-	"speed": 50,
+	"hp": 140, 
+	"speed": 90,
 	"attack_distance": 100, 
 	"attack_collision_resource": "res://asset/enemy_assets/largeenemyattack.tres",
 	"attack_collision_transform": Vector2(50,0),
 	"attack_power": 12,
 	"attack_type": "default",
-	"attack_windup": 0.8,
+	"attack_windup": 0.6,
 	"attack_time": 0.2,
 	"attack_cooldown": 1.2,
-	"notice_distance": 150,
+	"notice_distance": 200,
 	"knockback_weight": 100,
 	"xp_value" : 3,
 }
@@ -231,9 +242,16 @@ var enemy_info_large := {
 func attack_large(enemy: Node):
 	# Same damn attack as normal but I'm too lazy to make them point to the same thing
 	if enemy.get_meta("attack_state") == "idle":
+		if (enemy.global_position - Game.player_position).length() >= enemy_info_large["attack_distance"]:
+			enemy.set_meta("state", "chase")
+			return
+		
 		enemy.set_meta("attack_state", "windup")
 		var attack_process = enemy.create_tween()
-		attack_process.tween_property(enemy, "modulate", Color(2,2,2,1), enemy_info_large["attack_windup"])
+		# enemy brightens while winding up
+		attack_process.tween_property(enemy, "modulate", Color(2,0,0,1), enemy_info_large["attack_windup"] - 0.05)
+		# REALLY BRIGHT WHITE to signify dodge window
+		attack_process.tween_property(enemy, "modulate", Color(15,15,15,1), 0.05)
 		await attack_process.finished
 		enemy.modulate = Color(1,1,1,1)
 		enemy.get_node("AttackArea").monitoring = true
@@ -253,13 +271,10 @@ func attack_large(enemy: Node):
 		attack_cooldown_tween.tween_interval(enemy_info_large["attack_cooldown"])
 		attack_cooldown_tween.tween_callback(func () : 
 			enemy.set_meta("attack_state", "idle"))
-			
-	if (enemy.global_position - Game.player_position).length() >= enemy_info_large["attack_distance"]:
-		enemy.set_meta("state", "chase")
 
 # Possible enemy patterns for different types of floors
 # They're all randomized by like 1 or 2
-var enemy_spawning_patterns := {
+const enemy_spawning_patterns := {
 	"easy": [
 		{"small": 4, "medium": 3},
 		{"small": 7, "medium": 2},

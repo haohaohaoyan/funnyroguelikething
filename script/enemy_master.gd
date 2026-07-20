@@ -84,7 +84,7 @@ func _physics_process(_delta: float) -> void:
 					
 		# Handles damage and health
 		if enemy.get_node("DamageArea").has_overlapping_bodies() or enemy.get_node("DamageArea").has_overlapping_areas():
-			EnemyPatterns.on_damage_take(enemy, enemy_info)
+			EnemyPatterns.on_damage_take(enemy, enemy_info, type)
 			# Aggros them just in case 
 			enemy.set_meta("state", "chase")
 			

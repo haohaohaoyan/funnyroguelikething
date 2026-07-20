@@ -2,13 +2,38 @@
 
 [ext_resource type="Texture2D" uid="uid://bi2xg1oinw1tk" path="res://asset/enemy_assets/boss.png" id="1_w1463"]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_w1463"]
+atlas = ExtResource("1_w1463")
+region = Rect2(0, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f8ge1"]
+atlas = ExtResource("1_w1463")
+region = Rect2(48, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t7yv1"]
+atlas = ExtResource("1_w1463")
+region = Rect2(96, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1nd82"]
+atlas = ExtResource("1_w1463")
+region = Rect2(144, 0, 48, 48)
+
 [resource]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_w1463")
+"texture": SubResource("AtlasTexture_w1463")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f8ge1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t7yv1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1nd82")
 }],
 "loop": 1,
-"name": &"default",
-"speed": 5.0
+"name": &"background",
+"speed": 8.0
 }]

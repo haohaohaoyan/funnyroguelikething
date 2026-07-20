@@ -54,7 +54,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"default",
-"speed": 28.0
+"speed": 26.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_s4jxa"]
@@ -76,7 +76,7 @@ position = Vector2(-3.8147e-06, -3.8147e-06)
 scale = Vector2(3, 3)
 sprite_frames = ExtResource("2_fvtld")
 animation = &"move"
-frame_progress = 0.24201678
+frame_progress = 0.84034854
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=689296265]
 position = Vector2(-3.8147e-06, -3.8147e-06)
@@ -133,7 +133,7 @@ monitoring = false
 shape = SubResource("RectangleShape2D_s4jxa")
 
 [node name="DodgeWindow" type="Timer" parent="." unique_id=2085522545]
-wait_time = 0.3
+wait_time = 0.5
 one_shot = true
 
 [node name="Weapon" type="Node2D" parent="." unique_id=1406911994]

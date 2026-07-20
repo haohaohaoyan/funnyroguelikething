@@ -107,7 +107,7 @@ var upgrade_info = {
 		"description": "+9 HP healed per floor but attack cooldown is longer",
 		"stat_changes": {
 			"autoheal": 5,
-			"attack_cooldown": 0.3
+			"attack_cooldown": 0.2
 		},
 		"prerequisites": ["autoheal_1"]
 	},

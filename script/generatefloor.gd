@@ -23,14 +23,14 @@ func setup(current_floor_count):
 	# Set floor iteration count based on difficulty
 	var floor_grow
 	var spawn_difficulty
-	if current_floor_count <= 4:
-		floor_grow = 2
+	if current_floor_count <= 5:
+		floor_grow = 1
 		spawn_difficulty = "easy"
-	elif current_floor_count <= 9:
-		floor_grow = 3
+	elif current_floor_count <= 10:
+		floor_grow = 2
 		spawn_difficulty = "medium"
 	elif current_floor_count <= 13:
-		floor_grow = 4
+		floor_grow = 3
 		spawn_difficulty = "hard"
 	else: # floor 14 is boss
 		return setup_boss()
@@ -55,12 +55,15 @@ func setup(current_floor_count):
 	
 	# Add enemies by type based on the spawn difficulty
 	var spawn_dict = EnemyPatterns.enemy_spawning_patterns[spawn_difficulty].pick_random()
+	var enemies_spawned : int = 0
 	for enemy_type in spawn_dict:
-		spawn_enemies(enemy_type, spawn_dict[enemy_type], global_room_positions, 128, 3)
-		# TODO need to randomize this
-	
+		var enemy_count = spawn_dict[enemy_type] + (round(spawn_dict[enemy_type] * 0.15))
+		spawn_enemies(enemy_type, enemy_count, global_room_positions, 128, 3)
+		enemies_spawned += enemy_count
+		
 	var output = {
-		"player_start_pos": player_start
+		"player_start_pos": player_start,
+		"enemy_count": enemies_spawned
 	}
 	
 	return output
@@ -175,7 +178,8 @@ func setup_boss():
 	add_child(boss_scene.instantiate())
 		
 	return {
-		"player_start_pos": Vector2(0,0)
+		"player_start_pos": Vector2(0,0),
+		"enemy_count": 1 # only the boss...
 	}
 	
 	

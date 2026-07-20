@@ -19,6 +19,7 @@ script = ExtResource("1_5kiuu")
 
 [node name="ScreenTransition" type="CanvasLayer" parent="." unique_id=819272313]
 layer = 128
+visible = false
 
 [node name="ColorRect" type="ColorRect" parent="ScreenTransition" unique_id=467925286]
 anchors_preset = 15
@@ -100,7 +101,7 @@ offset_left = -53.0
 offset_top = -23.0
 grow_horizontal = 0
 grow_vertical = 0
-text = "Floor 1"
+text = "14 days before deadline"
 label_settings = SubResource("LabelSettings_dbls1")
 horizontal_alignment = 2
 
@@ -153,17 +154,17 @@ size_flags_vertical = 0
 text = "choose upgrade"
 horizontal_alignment = 1
 
-[node name="FinishScreen" type="CanvasLayer" parent="." unique_id=458442817]
+[node name="GameOverScreen" type="CanvasLayer" parent="." unique_id=458442817]
 visible = false
 
-[node name="Panel" type="Panel" parent="FinishScreen" unique_id=610325065]
+[node name="Panel" type="Panel" parent="GameOverScreen" unique_id=610325065]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="FinishScreen/Panel" unique_id=1014968025]
+[node name="VBoxContainer" type="VBoxContainer" parent="GameOverScreen/Panel" unique_id=1014968025]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -177,20 +178,73 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="BigAssLabel" type="Label" parent="FinishScreen/Panel/VBoxContainer" unique_id=15434108]
+[node name="BigAssLabel" type="Label" parent="GameOverScreen/Panel/VBoxContainer" unique_id=15434108]
 layout_mode = 2
 text = "Game Over"
 label_settings = SubResource("LabelSettings_5c0fr")
 
-[node name="Label" type="Label" parent="FinishScreen/Panel/VBoxContainer" unique_id=1721342143]
+[node name="Label" type="Label" parent="GameOverScreen/Panel/VBoxContainer" unique_id=1721342143]
 layout_mode = 2
 text = "Another side project abandoned"
 horizontal_alignment = 1
 
-[node name="Replay" type="Button" parent="FinishScreen/Panel/VBoxContainer" unique_id=488076700]
+[node name="Replay" type="Button" parent="GameOverScreen/Panel/VBoxContainer" unique_id=488076700]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "start a new one?"
+
+[node name="VictoryScreen" type="CanvasLayer" parent="." unique_id=325158779]
+visible = false
+
+[node name="Panel" type="Panel" parent="VictoryScreen" unique_id=1060451811]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VictoryScreen/Panel" unique_id=479336822]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 32
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VictoryScreen/Panel/MarginContainer" unique_id=1609244756]
+layout_mode = 2
+
+[node name="BigAssLabel" type="Label" parent="VictoryScreen/Panel/MarginContainer/VBoxContainer" unique_id=323757144]
+layout_mode = 2
+text = "Project Complete!"
+label_settings = SubResource("LabelSettings_5c0fr")
+
+[node name="Label" type="Label" parent="VictoryScreen/Panel/MarginContainer/VBoxContainer" unique_id=900874194]
+layout_mode = 2
+text = "Time: 0
+
+Total Problems Solved: 0
+Bugs Fixed: 0
+Tasks Completed: 0
+Errors Resolved: 0
+Deadlines Met: 1
+% of Problems Solved: 0%
+
+Total Damage: 0
+Critical Hits Inflicted: 0
+Counterattacks Triggered: 0
+Upgrades Taken: 0
+
+\"We're out of beta, we're releasing on time\""
+
+[node name="Replay" type="Button" parent="VictoryScreen/Panel/MarginContainer/VBoxContainer" unique_id=1388029795]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "start a new project?"
 
 [node name="Background" type="CanvasLayer" parent="." unique_id=606317985]
 layer = -1
@@ -205,4 +259,4 @@ grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
 [connection signal="game_over" from="." to="." method="_on_game_over"]
-[connection signal="pressed" from="FinishScreen/Panel/VBoxContainer/Replay" to="." method="_on_restart"]
+[connection signal="pressed" from="GameOverScreen/Panel/VBoxContainer/Replay" to="." method="_on_restart"]

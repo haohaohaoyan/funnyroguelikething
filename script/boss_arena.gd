@@ -53,7 +53,7 @@ func _boss_damage_take():
 	if $Enemy not in Game.player_current_attack["enemies_hit"]:
 		# Attack damage formula: player attack base +- 15 percent, multiply by crit if critting
 		var crit_boost = 1 if randf() >= Game.player_stats["critical_chance"] else Game.player_stats["critical_bonus"]
-		var damage_amount = Game.player_stats["attack_power"] + Game.player_stats["attack_bonus"]
+		var damage_amount = Game.player_stats["attack_power"]
 		var damage_taken = (damage_amount + round((randf() - 0.5) * (damage_amount * 0.15))
 			) * crit_boost
 			
@@ -69,16 +69,10 @@ func _boss_damage_take():
 				Game.emit_floating_text($Enemy, "CRITICAL RUSH", Vector2.DOWN, 0.3, Color.GREEN_YELLOW, 32)
 				# First kill old tween
 				if Game.current_rush_tween:
-					Game.player_stats["attack_bonus"] = max(0, Game.player_stats["attack_bonus"]  - 6)
 					Game.current_rush_tween.kill()
 				
-				Game.player_stats["attack_bonus"] += 6
 				Game.current_rush_tween = Game.create_tween()
 				Game.current_rush_tween.tween_interval(1)
-				Game.current_rush_tween.tween_callback(func () :
-					# Floored at 0 so it doesn't go negative
-					Game.player_stats["attack_bonus"] = max(0, Game.player_stats["attack_bonus"]  - 6)
-					)
 		else:
 			Game.call_deferred("emit_floating_text", $Enemy, str(int(damage_taken)), 
 		Game.player_current_attack["direction"], 0.7)
@@ -104,9 +98,6 @@ func _physics_process(_delta: float) -> void:
 	# Attacks are also handled here
 	match boss_current_info["state"]:
 		"chase": 
-			# Just ominously move at player
-			$Enemy.look_at(Game.player_position)
-			
 			boss_current_info["movement_velocity"] = (Game.player_position - $Enemy.global_position).normalized() * base_boss_info["movement_speed"]
 		"rush":
 			# Slash multiple times at player in quick succession
@@ -127,7 +118,6 @@ func _physics_process(_delta: float) -> void:
 					
 					var distance = distance_base + ((Game.player_position - $Enemy.global_position).length())
 					boss_current_info["movement_velocity"] = (Game.player_position - $Enemy.global_position).normalized() * distance
-					$Enemy.look_at(Game.player_position)
 					$Enemy/AttackArea.monitoring = true
 					$Enemy/AttackArea.monitorable = true
 					# Set time for rush to stop being an active attack
