@@ -15,6 +15,8 @@ The enemies are things that you usually have to do, like fixing bugs, implementi
 framed in a medieval setting, reminiscent of regular dungeons. (Attacking also kind of reminds me of the TF2 Engineer, to the point where the weapon
 indicator is a wrench.)
 
+This project was built for Hack Club's Horizons series of hackathons, specifically to qualify for the Polaris hackathon.
+
 Be warned though, it's not playtested thoroughly and there's a good chance there are some balance issues. Here are the current edits recommended by the 3 people who have played so far:
 - Slow down medium enemy
 - Add instructions that are really in your face (friend skipped over title screen and didn't know how to attack)
