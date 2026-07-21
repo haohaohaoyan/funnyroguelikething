@@ -15,6 +15,10 @@ The enemies are things that you usually have to do, like fixing bugs, implementi
 framed in a medieval setting, reminiscent of regular dungeons. (Attacking also kind of reminds me of the TF2 Engineer, to the point where the weapon
 indicator is a wrench.)
 
+Be warned though, it's not playtested thoroughly and there's a good chance there are some balance issues. Here are the current edits recommended by the 3 people who have played so far:
+- Slow down medium enemy
+- Add instructions that are really in your face (friend skipped over title screen and didn't know how to attack)
+
 ![Screenshot 1. I am about to get murdered by like 6 enemies.](screenshot_1.png)
 
 ![Screenshot 2. Upgrade menu](screenshot_2.png)
@@ -37,6 +41,7 @@ Problems I faced:
 - The balance isn't great, but I'm getting it tested and getting feedback from my friends. The upgrade selection also isn't great, but that's because I didn't have much time.
 - The background didn't have good contrast with the player & stairs, but that's fixed by making it a few shades darker and removing detail.
 - Spawning damage labels used to take a lot of processing on the physics process (almost doubling it) but I deferred their spawning to the main process and used object pooling to keep physics process at a stable 0.8ms most of the time. The damage number object pool starts empty and a new label has to be made when there isn't enough, but they're kept around and reused so the performance really only is worse within the first few seconds of gameplay.
+- Playtesting wasn't done early enough before submission. It should work, but I haven't gotten enough people to test it. 
 
 ### Instructions:
 These are actually listed in the game itself.
